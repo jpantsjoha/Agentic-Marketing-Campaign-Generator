@@ -220,11 +220,6 @@ class EnhancedImageGenerationAgent(LlmAgent):
     """Enhanced image generation agent with real Imagen 3.0 API integration."""
     
     def __init__(self):
-        self.circuit_breaker = ImageGenerationCircuitBreaker()
-        self.cost_controller = ImageGenerationCostController()
-        self.cache_manager = ImageCacheManager()
-        self.storage_client = storage.Client() if GOOGLE_CLOUD_PROJECT else None
-        
         super().__init__(
             name="EnhancedImageGenerationAgent",
             model=Gemini(model_name=GEMINI_MODEL, api_key=GEMINI_API_KEY) if GEMINI_API_KEY else "mock",
@@ -256,6 +251,26 @@ Always prioritize:
 - User experience optimization""",
             description="Enhanced image generation with real Imagen 3.0 API integration"
         )
+        
+        self._circuit_breaker = ImageGenerationCircuitBreaker()
+        self._cost_controller = ImageGenerationCostController()
+        self._cache_manager = ImageCacheManager()
+        self._storage_client = storage.Client() if GOOGLE_CLOUD_PROJECT else None
+    
+    @property
+    def circuit_breaker(self) -> ImageGenerationCircuitBreaker:
+        """Get circuit breaker."""
+        return self._circuit_breaker
+    
+    @property
+    def cost_controller(self) -> ImageGenerationCostController:
+        """Get cost controller."""
+        return self._cost_controller
+    
+    @property
+    def cache_manager(self) -> ImageCacheManager:
+        """Get cache manager."""
+        return self._cache_manager
     
     async def generate_images_batch(self, prompts: List[str], business_context: Dict[str, Any], campaign_guidance: Dict[str, Any] = None) -> List[Optional[str]]:
         """Generate multiple images concurrently with timeout handling."""
@@ -266,17 +281,17 @@ Always prioritize:
         logger.info(f"🖼️ Starting batch image generation for {len(prompts)} prompts")
         
         # Check circuit breaker
-        if not self.circuit_breaker.can_execute():
+        if not self._circuit_breaker.can_execute():
             logger.error("🔴 Circuit breaker is OPEN - skipping image generation")
             return [None] * len(prompts)
         
         # Check cost limits
-        if not self.cost_controller.can_generate_image():
+        if not self._cost_controller.can_generate_image():
             logger.warning("💰 Daily image generation limit reached")
             return [None] * len(prompts)
         
         # Clean up expired cache
-        self.cache_manager.cleanup_expired_cache()
+        self._cache_manager.cleanup_expired_cache()
         
         # Prepare tasks for batch processing
         tasks = []
@@ -303,12 +318,12 @@ Always prioritize:
                 if isinstance(result, Exception):
                     logger.error(f"❌ Image generation failed: {result}")
                     results.append(None)
-                    self.circuit_breaker.record_failure()
+                    self._circuit_breaker.record_failure()
                 else:
                     results.append(result)
                     if result:
-                        self.circuit_breaker.record_success()
-                        self.cost_controller.record_image_generation()
+                        self._circuit_breaker.record_success()
+                        self._cost_controller.record_image_generation()
         
         success_count = sum(1 for r in results if r is not None)
         logger.info(f"✅ Batch image generation completed: {success_count}/{len(prompts)} successful")
@@ -326,7 +341,7 @@ Always prioritize:
         
         try:
             # Check cache first
-            cached_url = self.cache_manager.get_cached_image(prompt, business_context)
+            cached_url = self._cache_manager.get_cached_image(prompt, business_context)
             if cached_url:
                 return cached_url
             
@@ -343,7 +358,7 @@ Always prioritize:
             
             if image_url:
                 # Cache successful generation
-                self.cache_manager.cache_image(prompt, business_context, image_url)
+                self._cache_manager.cache_image(prompt, business_context, image_url)
                 
                 logger.info(f"✅ Image generated successfully: {prompt[:50]}...")
                 return image_url
@@ -386,7 +401,7 @@ Always prioritize:
                 image = response.images[0]
                 
                 # Upload to cloud storage if available
-                if self.storage_client:
+                if self._storage_client:
                     image_url = await self._upload_image_to_storage(image.image_data, prompt)
                     return image_url
                 else:
@@ -404,7 +419,7 @@ Always prioritize:
         """Upload image to cloud storage and return public URL."""
         
         try:
-            bucket = self.storage_client.bucket(STORAGE_BUCKET)
+            bucket = self._storage_client.bucket(STORAGE_BUCKET)
             
             # Generate unique filename
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -525,15 +540,15 @@ Always prioritize:
         return {
             "images_generated": success_count,
             "results": results,
-            "cost_stats": self.cost_controller.get_daily_stats()
+            "cost_stats": self._cost_controller.get_daily_stats()
         }
     
     def get_generation_stats(self) -> Dict[str, Any]:
         """Get current generation statistics."""
         return {
-            "cost_stats": self.cost_controller.get_daily_stats(),
-            "circuit_breaker_state": self.circuit_breaker.state,
-            "circuit_breaker_failures": self.circuit_breaker.failure_count
+            "cost_stats": self._cost_controller.get_daily_stats(),
+            "circuit_breaker_state": self._circuit_breaker.state,
+            "circuit_breaker_failures": self._circuit_breaker.failure_count
         }
 
 # Factory function

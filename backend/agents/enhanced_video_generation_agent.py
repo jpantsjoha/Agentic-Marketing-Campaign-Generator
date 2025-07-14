@@ -280,9 +280,6 @@ class EnhancedVideoGenerationAgent(LlmAgent):
     """Enhanced video generation agent with real Veo 2.0 API integration."""
     
     def __init__(self):
-        self.storage_manager = VideoStorageManager()
-        self.generation_queue = VideoGenerationQueue()
-        
         super().__init__(
             name="EnhancedVideoGenerationAgent",
             model=Gemini(model_name=GEMINI_MODEL, api_key=GEMINI_API_KEY) if GEMINI_API_KEY else "mock",
@@ -312,6 +309,19 @@ Always prioritize:
 - User experience optimization""",
             description="Enhanced video generation with real Veo 2.0 API integration"
         )
+        
+        self._storage_manager = VideoStorageManager()
+        self._generation_queue = VideoGenerationQueue()
+    
+    @property
+    def storage_manager(self) -> VideoStorageManager:
+        """Get storage manager."""
+        return self._storage_manager
+    
+    @property
+    def generation_queue(self) -> VideoGenerationQueue:
+        """Get generation queue."""
+        return self._generation_queue
     
     async def generate_videos_for_posts(
         self, 
@@ -330,8 +340,8 @@ Always prioritize:
         logger.info(f"🎬 Starting video generation for {len(video_posts)} posts")
         
         # Start queue processing if not already running
-        if not self.generation_queue.processing:
-            asyncio.create_task(self.generation_queue.start_processing())
+        if not self._generation_queue.processing:
+            asyncio.create_task(self._generation_queue.start_processing())
         
         generation_results = []
         
@@ -345,7 +355,7 @@ Always prioritize:
                 # Add to generation queue
                 job_id = f"video_{post['id']}_{uuid.uuid4().hex[:8]}"
                 
-                await self.generation_queue.add_job(
+                await self._generation_queue.add_job(
                     job_id=job_id,
                     prompt=enhanced_prompt,
                     metadata={
@@ -428,7 +438,7 @@ Always prioritize:
     
     async def get_video_generation_status(self, job_id: str) -> Dict[str, Any]:
         """Get status of video generation job."""
-        return await self.generation_queue.get_job_status(job_id)
+        return await self._generation_queue.get_job_status(job_id)
     
     async def get_completed_videos(self, post_ids: List[str]) -> Dict[str, Any]:
         """Get completed videos for specific posts."""
@@ -436,7 +446,7 @@ Always prioritize:
         
         for post_id in post_ids:
             # Find jobs for this post
-            for job_id, job in self.generation_queue.completed_jobs.items():
+            for job_id, job in self._generation_queue.completed_jobs.items():
                 if job['metadata'].get('post_id') == post_id:
                     completed_videos[post_id] = {
                         'video_url': job['video_url'],
@@ -450,7 +460,7 @@ Always prioritize:
     
     async def cleanup_old_videos(self, max_age_days: int = 30):
         """Clean up old videos from storage."""
-        await self.storage_manager.cleanup_old_videos(max_age_days)
+        await self._storage_manager.cleanup_old_videos(max_age_days)
 
 # Factory function
 async def create_enhanced_video_generation_agent() -> EnhancedVideoGenerationAgent:

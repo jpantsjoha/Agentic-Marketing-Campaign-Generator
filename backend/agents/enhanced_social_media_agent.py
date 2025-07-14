@@ -413,10 +413,6 @@ class EnhancedSocialMediaAgent(LlmAgent):
     """Enhanced social media agent with complete OAuth and publishing integration."""
     
     def __init__(self):
-        self.token_manager = SocialMediaTokenManager()
-        self.linkedin_publisher = LinkedInPublisher(self.token_manager)
-        self.twitter_publisher = TwitterPublisher(self.token_manager)
-        
         super().__init__(
             name="EnhancedSocialMediaAgent",
             model=Gemini(model_name=GEMINI_MODEL, api_key=GEMINI_API_KEY) if GEMINI_API_KEY else "mock",
@@ -446,6 +442,25 @@ Always ensure:
 - User privacy and data protection""",
             description="Enhanced social media publishing with OAuth integration"
         )
+        
+        self._token_manager = SocialMediaTokenManager()
+        self._linkedin_publisher = LinkedInPublisher(self._token_manager)
+        self._twitter_publisher = TwitterPublisher(self._token_manager)
+    
+    @property
+    def token_manager(self) -> SocialMediaTokenManager:
+        """Get token manager."""
+        return self._token_manager
+    
+    @property
+    def linkedin_publisher(self) -> LinkedInPublisher:
+        """Get LinkedIn publisher."""
+        return self._linkedin_publisher
+    
+    @property
+    def twitter_publisher(self) -> TwitterPublisher:
+        """Get Twitter publisher."""
+        return self._twitter_publisher
     
     def initiate_oauth_flow(self, platform: str, user_id: str) -> Dict[str, Any]:
         """Initiate OAuth flow for a social media platform."""
@@ -537,7 +552,7 @@ Always ensure:
             
             if token_data:
                 # Store encrypted token
-                self.token_manager.store_token(user_id, platform, token_data)
+                self._token_manager.store_token(user_id, platform, token_data)
                 
                 logger.info(f"✅ OAuth completed for {user_id} on {platform}")
                 
@@ -707,9 +722,9 @@ Always ensure:
             for post in posts:
                 try:
                     if platform == 'linkedin':
-                        result = await self.linkedin_publisher.publish_post(user_id, post)
+                        result = await self._linkedin_publisher.publish_post(user_id, post)
                     elif platform == 'twitter':
-                        result = await self.twitter_publisher.publish_post(user_id, post)
+                        result = await self._twitter_publisher.publish_post(user_id, post)
                     else:
                         result = {"success": False, "error": f"Publishing not implemented for {platform}"}
                     
@@ -748,7 +763,7 @@ Always ensure:
         connections = {}
         
         for platform in platforms:
-            token_data = self.token_manager.get_token(user_id, platform)
+            token_data = self._token_manager.get_token(user_id, platform)
             if token_data:
                 expires_at = token_data.get('expires_at')
                 is_expired = False

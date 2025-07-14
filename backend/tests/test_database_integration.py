@@ -77,7 +77,8 @@ class TestDatabaseIntegration:
         
         expected_tables = [
             'campaign_templates', 'campaigns', 'generated_content',
-            'schema_version', 'uploaded_files', 'user_sessions', 'users'
+            'schema_version', 'uploaded_files', 'user_sessions', 'users',
+            'social_media_connections', 'scheduled_posts', 'campaign_chat_history'
         ]
         
         assert set(tables) == set(expected_tables), f"Missing tables: {set(expected_tables) - set(tables)}"
