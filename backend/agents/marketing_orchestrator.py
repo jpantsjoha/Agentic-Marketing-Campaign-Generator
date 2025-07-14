@@ -20,7 +20,7 @@ from google.adk.agents.llm_agent import LlmAgent
 from google.adk.agents.base_agent import BaseAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.invocation_context import InvocationContext
-# from google.adk.telemetry import tracer  # Commented out due to compatibility issues
+from google.adk.memory import InMemoryMemoryService
 from google.adk.models import Gemini
 
 # Import business analysis agent for direct use

@@ -1,6 +1,6 @@
-# Core Dependencies
-google-adk>=1.2.1
-google-genai>=1.16.1
+# Core Dependencies - ADK v1.6.1+ with A2A support
+google-adk>=1.6.1,<2.0.0
+google-genai>=1.6.0
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
 pydantic[email]>=2.5.0
@@ -18,6 +18,14 @@ lxml>=4.9.0
 python-magic>=0.4.27
 Pillow>=10.0.0
 PyPDF2>=3.0.1
+python-pptx>=0.6.21
+
+# Cloud Storage and AI Platform
+google-cloud-storage>=2.10.0
+google-cloud-aiplatform>=1.60.0
+
+# OAuth and Social Media
+authlib>=1.2.0
 
 # Security and Encryption
 cryptography>=41.0.0

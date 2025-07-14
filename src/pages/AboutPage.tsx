@@ -206,7 +206,7 @@ const AboutPage: React.FC = () => {
       icon: <Database className="w-6 h-6 text-green-400" />,
       specs: [
         "Python 3.9+ with FastAPI async framework",
-        "Google ADK 1.0+ for agent orchestration",
+        "Google ADK 1.6+ for agent orchestration",
         "Pydantic 2.0+ for data validation",
         "SQLite/PostgreSQL for local MVP database"
       ]

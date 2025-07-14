@@ -339,15 +339,15 @@ class ImageGenerationAgent:
         if self.gemini_api_key:
             try:
                 self.client = genai.Client(api_key=self.gemini_api_key)
-                    logger.info(f"✅ Image Generation Agent initialized with AI Studio client using {self.image_model}")
+                logger.info(f"✅ Image Generation Agent initialized with AI Studio client using {self.image_model}")
             except Exception as e:
-                    logger.error(f"❌ Failed to initialize AI Studio client: {e}")
+                logger.error(f"❌ Failed to initialize AI Studio client: {e}")
                 self.client = None
-                    self.gemini_api_key = None
-        else:
-                logger.warning("⚠️ GOOGLE_API_KEY not set for AI Studio - using placeholder mode")
-            self.client = None
                 self.gemini_api_key = None
+        else:
+            logger.warning("⚠️ GOOGLE_API_KEY not set for AI Studio - using placeholder mode")
+            self.client = None
+            self.gemini_api_key = None
     
     async def generate_images(self, prompts: List[str], business_context: Dict[str, Any], campaign_id: str = "default") -> List[Dict[str, Any]]:
         """
@@ -1053,21 +1053,21 @@ class VideoGenerationAgent:
                 logger.info(f"🎬 Enhanced marketing prompt created ({len(veo_prompt)} chars)")
                 
                 # Initialize Google Genai client for video generation
-                    from google import genai
-                    from google.genai import types
+                from google import genai
+                from google.genai import types
                     
                 if not self.gemini_api_key:
                     raise ValueError("GEMINI_API_KEY not configured for video generation")
                 
-                    client = genai.Client(api_key=self.gemini_api_key)
+                client = genai.Client(api_key=self.gemini_api_key)
                 logger.info("✅ Veo client initialized successfully")
                 
                 # Generate video using Veo 2.0 API following official documentation
                 logger.info(f"🎬 Starting Veo 2.0 operation: '{veo_prompt[:50]}...'")
                 
-                    operation = client.models.generate_videos(
+                operation = client.models.generate_videos(
                     model="veo-2.0-generate-001",
-                        prompt=veo_prompt,
+                    prompt=veo_prompt,
                     config=types.GenerateVideosConfig(
                         person_generation="allow_adult",  # Allow adults for marketing content
                         aspect_ratio="16:9",  # Marketing standard
@@ -1108,8 +1108,8 @@ class VideoGenerationAgent:
                     logger.info(f"✅ Veo video generated successfully")
                     
                     # Download video file
-                            client.files.download(file=generated_video.video)
-                            generated_video.video.save(str(video_path))
+                    client.files.download(file=generated_video.video)
+                    generated_video.video.save(str(video_path))
                             
                     # Verify file was saved
                     if video_path.exists():
@@ -1117,35 +1117,34 @@ class VideoGenerationAgent:
                         logger.info(f"✅ Video saved: {video_path} ({file_size:,} bytes)")
                         
                         # Return successful video data
-                            return {
+                        return {
                             "id": f"veo_video_{video_hash}_{index}",
                             "prompt": veo_prompt,
                             "video_url": f"/api/v1/content/videos/{campaign_id}/{video_filename}",
                             "video_path": str(video_path),
                             "generation_method": "veo_2.0_api",
-                                "status": "success",
-                                "metadata": {
+                            "status": "success",
+                            "metadata": {
                                 "model": "veo-2.0-generate-001",
-                                    "duration": "5s",
-                                    "format": "mp4",
-                                    "resolution": "720p",
-                                    "aspect_ratio": "16:9",
+                                "duration": "5s",
+                                "format": "mp4",
+                                "resolution": "720p",
+                                "aspect_ratio": "16:9",
                                 "generation_time": elapsed,
                                 "file_size": file_size,
                                 "operation_id": operation.name,
                                 "company": company_name,
                                 "prompt_enhanced": True,
                                 "api_version": "google.genai"
-                                }
                             }
-                        else:
+                        }
+                    else:
                         logger.error(f"❌ Video file not saved: {video_path}")
                         return self._generate_fallback_video(prompt, index)
                         
-                    else:
+                else:
                     logger.error("❌ No videos in Veo operation response")
                     return self._generate_fallback_video(prompt, index)
-                    
             except ImportError as e:
                 logger.error(f"❌ Google Genai library not available: {e}")
                 return self._generate_fallback_video(prompt, index)

@@ -18,7 +18,7 @@
 - [x] **Category**: Content Creation and Generation
 
 #### 2. **Functionality Requirements**
-- [x] **Built using Agent Development Kit**: ✅ Google ADK 1.0.0+ with Sequential Agents
+- [x] **Built using Agent Development Kit**: ✅ Google ADK 1.6.0+ with Sequential Agents
 - [x] **Multi-Agent System**: ✅ 4 specialized agents (CampaignOrchestrator, BusinessAnalysis, ContentGeneration, VisualContent)
 - [x] **Capable of Installation**: ✅ 3 Musketeers pattern with Makefile
 - [x] **Functions as Described**: ✅ 80% MVP-ready with comprehensive testing

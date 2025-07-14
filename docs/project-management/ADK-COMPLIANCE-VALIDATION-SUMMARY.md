@@ -141,7 +141,7 @@ Status: ✅ WORKING - Real images generated and served
 #### ✅ ADK Framework Highlighting
 - Multi-agent system architecture clearly documented
 - Sequential workflow pattern explained with diagrams
-- Google ADK 1.0.0+ compliance verified
+- Google ADK 1.6.0+ compliance verified
 - Production deployment considerations for Google Cloud
 
 ### Hackathon Submission Readiness
