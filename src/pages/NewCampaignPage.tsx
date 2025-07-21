@@ -99,15 +99,13 @@ const NewCampaignPage: React.FC = () => {
     setIsAnalyzing(true);
     try {
       const urls = [businessUrl, aboutPageUrl, productServiceUrl].filter(url => url && url.trim());
-      const response = await fetch('http://localhost:8000/api/v1/analysis/url', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urls: urls, analysis_depth: 'standard' }),
+      
+      // Use the proper API client instead of hardcoded fetch
+      const { VideoVentureLaunchAPI } = await import('@/lib/api');
+      const analysisResult = await VideoVentureLaunchAPI.analyzeUrls({
+        urls: urls,
+        analysis_type: 'business_context'
       });
-
-      if (!response.ok) throw new Error(`Analysis failed: ${response.status}`);
-
-      const analysisResult = await response.json();
       const businessAnalysis = analysisResult.business_analysis;
       if (businessAnalysis) {
         const autoDescription = `Company: ${businessAnalysis.company_name}\nIndustry: ${businessAnalysis.industry}\nTarget Audience: ${businessAnalysis.target_audience}\nBrand Voice: ${businessAnalysis.brand_voice}\n\nValue Propositions:\n${businessAnalysis.value_propositions?.map((vp: string) => `• ${vp}`).join('\n') || '• Not specified'}\n\nCompetitive Advantages:\n${businessAnalysis.competitive_advantages?.map((ca: string) => `• ${ca}`).join('\n') || '• Not specified'}\n\nMarket Positioning: ${businessAnalysis.market_positioning}`.trim();

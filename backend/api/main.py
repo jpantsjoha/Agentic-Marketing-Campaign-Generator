@@ -32,6 +32,7 @@ from google.adk.telemetry import tracer
 from .routes.campaigns import router as campaigns_router
 from .routes.content import router as content_router
 from .routes.analysis import router as analysis_router
+from .routes.enhanced_campaigns import router as enhanced_campaigns_router
 
 from .routes.social_auth import router as social_auth_router
 from .routes.social_posts import router as social_posts_router
@@ -139,8 +140,12 @@ app.include_router(
     prefix="/api/v1/analysis",
     tags=["Business Analysis"]
 )
+# Include enhanced campaigns V2 router
 app.include_router(
-
+    enhanced_campaigns_router,
+    tags=["Enhanced Campaigns V2"]
+)
+app.include_router(
     social_auth_router,
     prefix="/api/v1/auth/social",
     tags=["Social Media Authentication"]

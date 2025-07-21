@@ -1,5 +1,5 @@
-# Core Dependencies - ADK v1.6.1+ with A2A support
-google-adk>=1.6.1,<2.0.0
+# Core Dependencies - ADK v1.7.0+ with A2A support and enhanced features
+google-adk[a2a]>=1.7.0,<2.0.0
 google-genai>=1.6.0
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
@@ -37,6 +37,9 @@ pytest-cov>=4.1.0
 pytest-mock>=3.12.0
 pytest-xdist>=3.3.0
 coverage>=7.3.0
+
+# Enhanced ADK v1.6+ Dependencies
+aiofiles>=23.2.0
 
 # Development Dependencies
 black>=23.9.0
