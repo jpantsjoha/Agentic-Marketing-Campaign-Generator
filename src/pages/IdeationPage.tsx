@@ -640,35 +640,36 @@ const IdeationPage: React.FC = () => {
   // CRITICAL FIX 1.6: Fix missing dependencies and remove unused code
   useEffect(() => {
     if (!currentCampaign) {
-      console.warn('⚠️ No current campaign - redirecting to dashboard');
-      navigate('/');
-      return;
+      console.warn('⚠️ No current campaign - showing demo content for testing');
+      // For MVP/testing: Don't redirect, allow users to access the page
+      // navigate('/');
+      // return;
     }
     
     // CRITICAL DEBUG: Log campaign validation
     console.log('🔍 Campaign validation:', {
-      id: currentCampaign.id,
-      name: currentCampaign.name,
-      hasBusinessUrl: !!currentCampaign.businessUrl,
-      hasAboutUrl: !!currentCampaign.aboutPageUrl,
-      hasProductUrl: !!currentCampaign.productServiceUrl,
-      hasAiAnalysis: !!currentCampaign.aiAnalysis,
+      id: currentCampaign?.id,
+      name: currentCampaign?.name,
+      hasBusinessUrl: !!currentCampaign?.businessUrl,
+      hasAboutUrl: !!currentCampaign?.aboutPageUrl,
+      hasProductUrl: !!currentCampaign?.productServiceUrl,
+      hasAiAnalysis: !!currentCampaign?.aiAnalysis,
       timestamp: new Date().toISOString()
     });
     
-    if (currentCampaign.preferredDesign) {
+    if (currentCampaign?.preferredDesign) {
       setPreferredDesign(currentCampaign.preferredDesign);
     }
     
     // FIXED: Check if AI analysis and campaign guidance are missing and trigger regeneration
-    const hasAiAnalysis = currentCampaign.aiAnalysis?.businessAnalysis;
-    const hasCampaignGuidance = currentCampaign.aiAnalysis?.businessAnalysis?.campaign_guidance;
+    const hasAiAnalysis = currentCampaign?.aiAnalysis?.businessAnalysis;
+    const hasCampaignGuidance = currentCampaign?.aiAnalysis?.businessAnalysis?.campaign_guidance;
     const hasCreativeDirection = hasCampaignGuidance?.creative_direction;
-    const hasUrls = currentCampaign.businessUrl || currentCampaign.aboutPageUrl || currentCampaign.productServiceUrl;
+    const hasUrls = currentCampaign?.businessUrl || currentCampaign?.aboutPageUrl || currentCampaign?.productServiceUrl;
     
     // CRITICAL FIX 1.5: Remove unused analysisKey
     
-    if (!hasAiAnalysis && hasUrls && !isRegeneratingAnalysis) {
+    if (currentCampaign && !hasAiAnalysis && hasUrls && !isRegeneratingAnalysis) {
       console.log('🔄 Missing AI analysis detected, triggering automatic regeneration...');
       // Add small delay to prevent race conditions
       setTimeout(() => {
@@ -676,7 +677,7 @@ const IdeationPage: React.FC = () => {
           regenerateAIAnalysis();
         }
       }, 500);
-    } else if (hasAiAnalysis && (!hasCampaignGuidance || !hasCreativeDirection) && hasUrls && !isRegeneratingAnalysis) {
+    } else if (currentCampaign && hasAiAnalysis && (!hasCampaignGuidance || !hasCreativeDirection) && hasUrls && !isRegeneratingAnalysis) {
       console.log('🔄 Missing campaign guidance detected, triggering automatic regeneration...');
       // Add small delay to prevent race conditions
       setTimeout(() => {
@@ -691,9 +692,9 @@ const IdeationPage: React.FC = () => {
     const hasExistingPosts = (columns: any[]) => columns && columns.some(col => col.posts && col.posts.length > 0);
     
     if (savedColumns && hasExistingPosts(savedColumns)) {
-      console.log('📦 Restored social media columns from localStorage for campaign:', currentCampaign.id);
+      console.log('📦 Restored social media columns from localStorage for campaign:', currentCampaign?.id);
       setSocialMediaColumns(savedColumns);
-    } else if (currentCampaign.socialMediaColumns && hasExistingPosts(currentCampaign.socialMediaColumns)) {
+    } else if (currentCampaign?.socialMediaColumns && hasExistingPosts(currentCampaign.socialMediaColumns)) {
       console.log('📦 Using campaign data columns with existing posts');
       // CRITICAL FIX: Reset any stuck generation states when restoring from campaign data
       const cleanedColumns = currentCampaign.socialMediaColumns.map((col: any) => ({
@@ -709,7 +710,7 @@ const IdeationPage: React.FC = () => {
       if (savedColumns && savedColumns.length > 0) {
         console.log('📋 Preserving column structure without posts');
         setSocialMediaColumns(savedColumns);
-      } else if (currentCampaign.socialMediaColumns && currentCampaign.socialMediaColumns.length > 0) {
+      } else if (currentCampaign?.socialMediaColumns && currentCampaign.socialMediaColumns.length > 0) {
         console.log('📋 Using campaign column structure');
         const cleanedColumns = currentCampaign.socialMediaColumns.map((col: any) => ({
           ...col,
@@ -764,7 +765,186 @@ const IdeationPage: React.FC = () => {
     }
   }, [socialMediaColumns, currentCampaign, saveColumnsToStorage, updateCurrentCampaign]);
   
-  if (!currentCampaign) return null;
+  // For MVP/testing: Show demo content when no campaign is present
+  if (!currentCampaign) {
+    // Mock demo social media columns with visual content for testing
+    const demoColumns: SocialMediaColumn[] = [
+      {
+        id: 'text-only',
+        title: 'Text + URL Posts',
+        description: 'Marketing text with product URL for link unfurling',
+        mediaType: 'text-only',
+        posts: [
+          {
+            id: 'demo-text-1',
+            type: 'text-only',
+            platform: 'linkedin',
+            content: {
+              text: '🚀 Exciting news! We\'re launching something amazing that will transform how you achieve your business goals. Join thousands of satisfied customers who have already experienced the difference.',
+              hashtags: ['#marketing', '#business', '#growth'],
+              productUrl: 'https://example.com/product'
+            },
+            generationPrompt: 'Demo text-only post',
+            selected: false,
+            engagement_score: 8.5,
+            platform_optimized: {}
+          }
+        ],
+        isGenerating: false
+      },
+      {
+        id: 'text-image',
+        title: 'Text + Image Posts',
+        description: 'Shortened text with AI-generated images',
+        mediaType: 'text-with-image',
+        posts: [
+          {
+            id: 'demo-image-1',
+            type: 'text-with-image',
+            platform: 'linkedin',
+            content: {
+              text: '🎨 Visual storytelling at its finest! See how we\'re revolutionizing marketing.',
+              hashtags: ['#design', '#innovation', '#visual'],
+              imageUrl: 'https://picsum.photos/400/300?random=1',
+              productUrl: 'https://example.com/product'
+            },
+            generationPrompt: 'Demo image post',
+            selected: false,
+            engagement_score: 9.2,
+            platform_optimized: {}
+          },
+          {
+            id: 'demo-image-2',
+            type: 'text-with-image',
+            platform: 'linkedin',
+            content: {
+              text: '💡 Innovation meets execution. Transform your business today!',
+              hashtags: ['#innovation', '#business', '#success'],
+              imageUrl: 'https://picsum.photos/400/300?random=2',
+              productUrl: 'https://example.com/product'
+            },
+            generationPrompt: 'Demo image post 2',
+            selected: false,
+            engagement_score: 8.8,
+            platform_optimized: {}
+          }
+        ],
+        isGenerating: false
+      },
+      {
+        id: 'text-video',
+        title: 'Text + Video Posts', 
+        description: 'Marketing text with AI-generated videos',
+        mediaType: 'text-with-video',
+        posts: [
+          {
+            id: 'demo-video-1',
+            type: 'text-with-video',
+            platform: 'linkedin',
+            content: {
+              text: '🎬 Watch our latest success story! Real results from real customers.',
+              hashtags: ['#success', '#video', '#results'],
+              videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+              productUrl: 'https://example.com/product'
+            },
+            generationPrompt: 'Demo video post',
+            selected: false,
+            engagement_score: 9.5,
+            platform_optimized: {}
+          }
+        ],
+        isGenerating: false
+      }
+    ];
+
+    return (
+      <div className="min-h-screen vvl-gradient-bg flex flex-col">
+        <div className="flex-1 px-6 py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold vvl-text-primary mb-4">Demo Ideation Page</h2>
+              <p className="text-lg vvl-text-secondary">No active campaign - showing demo content for visual testing</p>
+              <div className="mt-4">
+                <button 
+                  onClick={() => navigate('/new-campaign')}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                >
+                  Create New Campaign
+                </button>
+              </div>
+            </div>
+
+            {/* Demo Content Columns */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {demoColumns.map((column) => (
+                <div key={column.id} className="vvl-card">
+                  <div className="p-6 border-b border-white/20">
+                    <h3 className="font-semibold vvl-text-primary">{column.title}</h3>
+                    <p className="text-sm vvl-text-secondary mt-1">{column.description}</p>
+                    <div className="text-xs vvl-text-secondary mt-2">
+                      {column.posts.length} demo post{column.posts.length !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+                  
+                  <div className="p-6 space-y-4">
+                    {column.posts.map((post) => (
+                      <div key={post.id} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
+                        <div className="space-y-3">
+                          <p className="text-sm vvl-text-secondary">{post.content.text}</p>
+                          
+                          {/* Hashtags */}
+                          <div className="flex flex-wrap gap-1">
+                            {post.content.hashtags.map((tag, idx) => (
+                              <span key={idx} className="text-xs text-blue-400">#{tag.replace('#', '')}</span>
+                            ))}
+                          </div>
+
+                          {/* Visual Content Preview */}
+                          {post.content.imageUrl && (
+                            <div className="relative rounded-lg overflow-hidden bg-gray-800">
+                              <img 
+                                src={post.content.imageUrl} 
+                                alt="Demo generated image"
+                                className="w-full h-48 object-cover"
+                                onLoad={() => console.log(`✅ Demo image loaded: ${post.id}`)}
+                                onError={() => console.log(`❌ Demo image failed: ${post.id}`)}
+                              />
+                              <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                                Demo Image
+                              </div>
+                            </div>
+                          )}
+
+                          {post.content.videoUrl && (
+                            <div className="relative rounded-lg overflow-hidden bg-gray-800">
+                              <video 
+                                src={post.content.videoUrl}
+                                className="w-full h-48 object-cover"
+                                controls
+                                poster="https://picsum.photos/400/240?random=10"
+                                onLoadStart={() => console.log(`✅ Demo video loading: ${post.id}`)}
+                              />
+                              <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                                Demo Video
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="text-xs vvl-text-secondary">
+                            Engagement Score: {post.engagement_score}/10
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen vvl-gradient-bg flex flex-col">

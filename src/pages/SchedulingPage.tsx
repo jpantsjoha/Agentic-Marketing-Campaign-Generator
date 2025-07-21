@@ -112,7 +112,9 @@ const SchedulingPage: React.FC = () => {
 
   useEffect(() => {
     if (!currentCampaign) {
-      navigate('/');
+      console.warn('⚠️ No current campaign - showing demo content for testing');
+      // For MVP/testing: Don't redirect, allow users to access the page
+      // navigate('/');
     } else {
       // Load platform connection status
       loadPlatformStatus();
@@ -261,7 +263,154 @@ const SchedulingPage: React.FC = () => {
     toast.success('Campaign template exported! You can upload this in future campaigns.');
   };
 
-  if (!currentCampaign) return null;
+  // For MVP/testing: Show demo content when no campaign is present
+  if (!currentCampaign) {
+    // Mock demo posts with visual content for scheduling preview
+    const demoSelectedPosts = [
+      {
+        id: 'demo-schedule-1',
+        type: 'text-with-image' as const,
+        platform: 'linkedin' as const,
+        content: {
+          text: '🚀 Exciting news! We\'re launching something amazing that will transform your business goals.',
+          hashtags: ['#marketing', '#business', '#growth'],
+          imageUrl: 'https://picsum.photos/400/300?random=3',
+          productUrl: 'https://example.com/product'
+        },
+        generationPrompt: 'Demo scheduling post with image',
+        selected: true
+      },
+      {
+        id: 'demo-schedule-2',
+        type: 'text-with-video' as const,
+        platform: 'instagram' as const,
+        content: {
+          text: '🎬 Watch our success story! Real results from real customers.',
+          hashtags: ['#success', '#video', '#results'],
+          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          productUrl: 'https://example.com/product'
+        },
+        generationPrompt: 'Demo scheduling post with video',
+        selected: true
+      },
+      {
+        id: 'demo-schedule-3',
+        type: 'text-only' as const,
+        platform: 'linkedin' as const,
+        content: {
+          text: '💡 Innovation meets execution. Transform your business today with our proven solutions.',
+          hashtags: ['#innovation', '#business', '#success'],
+          productUrl: 'https://example.com/product'
+        },
+        generationPrompt: 'Demo text-only scheduling post',
+        selected: true
+      }
+    ];
+
+    return (
+      <div className="min-h-screen vvl-gradient-bg flex flex-col">
+        <div className="flex-1 px-6 py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold vvl-text-primary mb-4">Demo Scheduling Page</h2>
+              <p className="text-lg vvl-text-secondary">No active campaign - showing demo content with visual previews</p>
+              <div className="mt-4">
+                <button 
+                  onClick={() => navigate('/new-campaign')}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                >
+                  Create New Campaign
+                </button>
+              </div>
+            </div>
+
+            {/* Demo Posts to Schedule */}
+            <div className="vvl-card p-6">
+              <h3 className="text-xl font-semibold vvl-text-primary mb-6">Demo Posts to Schedule ({demoSelectedPosts.length})</h3>
+              <div className="space-y-4">
+                {demoSelectedPosts.map((post, index) => (
+                  <div key={post.id} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                        {index + 1}
+                      </div>
+                      <div className="flex-grow">
+                        <div className="flex items-center gap-2 mb-2">
+                          <PlatformIcon platform={post.platform} />
+                          <span className="text-sm font-medium vvl-text-primary capitalize">{post.platform}</span>
+                          <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded">{post.type}</span>
+                        </div>
+                        
+                        <p className="vvl-text-secondary text-sm mb-2">{post.content.text}</p>
+                        
+                        {/* Hashtags */}
+                        {post.content.hashtags && (
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {post.content.hashtags.map((tag, idx) => (
+                              <span key={idx} className="text-xs text-blue-400">#{tag.replace('#', '')}</span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Visual Content Preview */}
+                        {post.content.imageUrl && (
+                          <div className="relative rounded-lg overflow-hidden bg-gray-800 mb-3">
+                            <img 
+                              src={post.content.imageUrl} 
+                              alt="Demo scheduled image"
+                              className="w-full h-32 object-cover"
+                              onLoad={() => console.log(`✅ Demo scheduling image loaded: ${post.id}`)}
+                              onError={() => console.log(`❌ Demo scheduling image failed: ${post.id}`)}
+                            />
+                            <div className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                              Scheduled Image
+                            </div>
+                          </div>
+                        )}
+
+                        {post.content.videoUrl && (
+                          <div className="relative rounded-lg overflow-hidden bg-gray-800 mb-3">
+                            <video 
+                              src={post.content.videoUrl}
+                              className="w-full h-32 object-cover"
+                              controls
+                              poster="https://picsum.photos/400/240?random=11"
+                              onLoadStart={() => console.log(`✅ Demo scheduling video loading: ${post.id}`)}
+                            />
+                            <div className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                              Scheduled Video
+                            </div>
+                          </div>
+                        )}
+
+                        {post.content.productUrl && (
+                          <div className="text-xs vvl-text-secondary">
+                            🔗 Product URL: {post.content.productUrl}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 text-center">
+                <div className="text-sm vvl-text-secondary mb-4">
+                  Demo scheduling interface - visual content previews working correctly
+                </div>
+                <button
+                  onClick={() => navigate('/ideation')}
+                  className="vvl-button-secondary"
+                >
+                  ← Back to Ideation
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen vvl-gradient-bg flex flex-col">
@@ -308,7 +457,7 @@ const SchedulingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold vvl-text-primary mb-4">{currentCampaign.name}</h2>
+            <h2 className="text-3xl font-bold vvl-text-primary mb-4">{currentCampaign?.name}</h2>
             <p className="text-lg vvl-text-secondary">Schedule your AI-generated content across social media platforms</p>
           </div>
 
