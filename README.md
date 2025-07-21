@@ -2,7 +2,7 @@
 ### Agentic AI Marketing Campaign Manager
 
 **Author: JP + 2025-06-28**
-**Version: v1.0.1alpha-blog-post**
+**Version: v1.0.1-alpha.blog-post**
 
 > **Transform your business ideas into professional marketing campaigns using Google's ADK Framework and Gemini API**
 
@@ -28,7 +28,7 @@ An open-source, AI-powered marketing campaign generator that demonstrates the po
 - **📚 ADR Commandments**: Created "Ten Commandments of VVL Development" from .cursorrules
 - **🏗️ Async Architecture**: Built comprehensive async visual content generation system
 
-**📊 Status**: Content generation fully working - 80% MVP complete. **Missing: Social media publishing integration for production readiness.**
+**📊 Status**: Content generation fully working - 75% MVP complete. **Missing: Social media publishing integration for production readiness.**
 
 ---
 
@@ -286,7 +286,7 @@ flowchart TD
 
 ### 📊 Technical Specifications
 
-**Current Solution Maturity: 90% (MVP-Ready with Visual Content Integration)**
+**Current Solution Maturity: 75% (MVP-Ready with Visual Content Integration)**
 
 | Component | Status | Completeness | Quality |
 |-----------|--------|--------------|---------|
@@ -556,7 +556,7 @@ make test-coverage-db     # Database coverage reporting
 
 ## 📊 Current Status & Roadmap
 
-### ✅ Completed (90% MVP-Ready with Layout & Visual Content Integration)
+### ✅ Completed (75% MVP-Ready with Layout & Visual Content Integration)
 
 **🤖 Agentic AI Core**:
 - ✅ Multi-agent architecture with ADK Framework (70% complete)
