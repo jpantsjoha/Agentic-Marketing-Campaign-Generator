@@ -171,24 +171,108 @@ class AsyncVisualManager:
         return job
     
     def _create_image_prompt(self, post: Dict[str, Any], business_context: Dict[str, Any], objective: str) -> str:
-        """Create optimized image generation prompt"""
+        """Create business-contextual image generation prompt"""
         content = post.get('content', '')
         company_name = business_context.get('company_name', 'Company')
+        business_description = business_context.get('business_description', '')
         
-        prompt = f"Create a professional marketing image for: {content[:100]}... "
-        prompt += f"Company: {company_name}, Objective: {objective}"
+        # Detect business industry for contextual prompts
+        industry = self._detect_business_industry(business_description)
+        
+        # Create industry-specific visual prompt
+        if industry == 'Photography':
+            prompt = f"Professional photography portfolio image showcasing {company_name}'s photography services and artistic style. "
+            prompt += f"High-quality camera equipment, beautiful composition, behind-the-scenes photographer work, "
+            prompt += f"elegant studio lighting or natural outdoor photography setting. "
+            prompt += f"Context: {content[:150]} - Style: Professional, artistic, high-end photography aesthetic. "
+            prompt += f"NO TEXT OVERLAYS or written words in the image."
+        elif industry == 'Food':
+            prompt = f"Appetizing food photography for {company_name} restaurant/catering business. "
+            prompt += f"Beautiful plated dishes, fresh ingredients, elegant presentation, warm restaurant ambiance. "
+            prompt += f"Context: {content[:150]} - Style: Food photography, mouth-watering, professional culinary presentation."
+        elif industry == 'Fitness':
+            prompt = f"Dynamic fitness and wellness imagery for {company_name}. "
+            prompt += f"Athletic equipment, gym environment, healthy lifestyle, energetic workout scenes. "
+            prompt += f"Context: {content[:150]} - Style: Motivational, energetic, health-focused."
+        elif industry == 'Tech':
+            prompt = f"Modern technology and innovation imagery for {company_name}. "
+            prompt += f"Clean minimalist design, digital interfaces, professional tech environment. "
+            prompt += f"Context: {content[:150]} - Style: Modern, sleek, innovative technology aesthetic."
+        elif industry == 'Art':
+            prompt = f"Creative artistic imagery showcasing {company_name}'s artistic work and studio. "
+            prompt += f"Art supplies, creative workspace, artistic compositions, gallery-worthy presentation. "
+            prompt += f"Context: {content[:150]} - Style: Creative, artistic, inspiring aesthetic."
+        else:
+            # Generic professional business prompt
+            prompt = f"Professional business marketing image for {company_name}. "
+            prompt += f"Clean, modern business environment appropriate for their industry. "
+            prompt += f"Context: {content[:150]} - Style: Professional, trustworthy, business-focused."
         
         return prompt
     
     def _create_video_prompt(self, post: Dict[str, Any], business_context: Dict[str, Any], objective: str) -> str:
-        """Create optimized video generation prompt"""
+        """Create business-contextual video generation prompt"""
         content = post.get('content', '')
         company_name = business_context.get('company_name', 'Company')
+        business_description = business_context.get('business_description', '')
         
-        prompt = f"Create a dynamic marketing video for: {content[:100]}... "
-        prompt += f"Company: {company_name}, Objective: {objective}"
+        # Detect business industry for contextual prompts
+        industry = self._detect_business_industry(business_description)
+        
+        # Create industry-specific video prompt
+        if industry == 'Photography':
+            prompt = f"Professional photography showcase video for {company_name}. "
+            prompt += f"Behind-the-scenes photographer at work, capturing beautiful moments, professional camera equipment in action, "
+            prompt += f"elegant photo shoot environment, artistic composition techniques, natural lighting or studio setup. "
+            prompt += f"Context: {content[:150]} - Style: Cinematic, professional, showcasing photography expertise and artistic vision."
+        elif industry == 'Food':
+            prompt = f"Appetizing food preparation video for {company_name} restaurant/catering. "
+            prompt += f"Chef preparing dishes, fresh ingredients, cooking process, beautiful food presentation. "
+            prompt += f"Context: {content[:150]} - Style: Mouth-watering, professional culinary cinematography."
+        elif industry == 'Fitness':
+            prompt = f"Dynamic fitness and wellness video for {company_name}. "
+            prompt += f"Energetic workout routines, gym environment, health and wellness activities, motivational fitness scenes. "
+            prompt += f"Context: {content[:150]} - Style: High-energy, motivational, fitness-focused."
+        elif industry == 'Tech':
+            prompt = f"Modern technology showcase video for {company_name}. "
+            prompt += f"Clean tech environment, innovative solutions in action, professional digital workspace, modern interfaces. "
+            prompt += f"Context: {content[:150]} - Style: Sleek, modern, technology-focused cinematography."
+        elif industry == 'Art':
+            prompt = f"Creative artistic process video for {company_name}. "
+            prompt += f"Artist at work, creative process, art creation, studio environment, artistic techniques. "
+            prompt += f"Context: {content[:150]} - Style: Creative, inspiring, artistic cinematography."
+        else:
+            # Generic professional business prompt
+            prompt = f"Professional business showcase video for {company_name}. "
+            prompt += f"Modern business environment, professional services in action, clean corporate setting. "
+            prompt += f"Context: {content[:150]} - Style: Professional, trustworthy, business-focused."
         
         return prompt
+    
+    def _detect_business_industry(self, business_description: str) -> str:
+        """Detect business industry from description for contextual visual prompts"""
+        description = business_description.lower()
+        
+        # Industry detection patterns
+        industry_patterns = {
+            'Photography': ['photography', 'photographer', 'photo', 'wedding', 'portrait', 'studio', 'headshot', 'commercial photography', 'event photography'],
+            'Food': ['restaurant', 'catering', 'food', 'chef', 'cuisine', 'dining', 'bakery', 'cafe', 'culinary', 'kitchen'],
+            'Fitness': ['fitness', 'gym', 'personal trainer', 'workout', 'exercise', 'wellness', 'health', 'yoga', 'pilates', 'crossfit'],
+            'Tech': ['technology', 'software', 'developer', 'app', 'digital', 'IT', 'coding', 'programming', 'startup', 'saas'],
+            'Art': ['artist', 'art', 'creative', 'design', 'gallery', 'artwork', 'painting', 'sculpture', 'illustration', 'graphic design'],
+            'Fashion': ['fashion', 'clothing', 'apparel', 'boutique', 'style', 'designer', 'retail', 'accessories', 'jewelry'],
+            'Consulting': ['consulting', 'consultant', 'advisory', 'business coach', 'strategy', 'professional services', 'coaching']
+        }
+        
+        # Check for industry patterns
+        for industry, patterns in industry_patterns.items():
+            matches = sum(1 for pattern in patterns if pattern in description)
+            if matches >= 1:  # At least one match
+                logger.info(f"🎯 Detected '{industry}' industry from business description")
+                return industry
+        
+        logger.info("🔍 No specific industry detected, using generic business context")
+        return 'Generic'
     
     async def _worker(self, worker_name: str):
         """Background worker for processing visual generation jobs"""
