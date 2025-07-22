@@ -1,0 +1,17 @@
+{
+  "campaign_id": "campaign_ed0caca25193",
+  "creation_timestamp": "2025-07-21T00:47:07.695719",
+  "last_updated": "2025-07-21T00:47:07.695724",
+  "campaign_name": "Validation Test Campaign",
+  "campaign_description": "Final validation test for Enhanced V2 API",
+  "business_analysis": null,
+  "content_strategy": null,
+  "visual_guidance": null,
+  "social_media_config": null,
+  "generation_history": [],
+  "version": 1,
+  "active_agents": [],
+  "completed_stages": [],
+  "session_id": "899970aa-8dca-470f-9a0b-ed8c476e5313",
+  "persistent": true
+}

@@ -1,0 +1,17 @@
+{
+  "campaign_id": "campaign_37fee45df698",
+  "creation_timestamp": "2025-07-21T00:43:29.763001",
+  "last_updated": "2025-07-21T00:43:29.763008",
+  "campaign_name": "Full Journey Test Campaign",
+  "campaign_description": "Complete user journey test for ADK v1.6+ features",
+  "business_analysis": null,
+  "content_strategy": null,
+  "visual_guidance": null,
+  "social_media_config": null,
+  "generation_history": [],
+  "version": 1,
+  "active_agents": [],
+  "completed_stages": [],
+  "session_id": "022383dd-760d-4309-b796-5d636a74deb0",
+  "persistent": true
+}

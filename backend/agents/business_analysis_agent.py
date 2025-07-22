@@ -1135,27 +1135,87 @@ class URLAnalysisAgent:
         urls_str = [str(url) for url in urls_analyzed]
         url_text_lower = ' '.join(urls_str).lower()
         
-        # Industry detection
-        if any(term in url_text_lower for term in ['tech', 'software', 'app', 'digital', 'ai']):
+        # Enhanced industry detection with better business context extraction
+        if any(term in url_text_lower for term in ['photography', 'photographer', 'photo', 'wedding', 'portrait', 'studio']):
+            industry = "Photography"
+            business_description = f"{company_name} provides professional photography services including portraits, events, and commercial photography"
+            target_audience = "Individuals and businesses seeking professional photography services, couples, families, brands"
+            visual_themes = ["creativity", "artistry", "moments", "beauty", "professional", "capturing memories"]
+            color_palette = ["warm", "natural", "artistic", "professional"]
+            suggested_themes = ["Creative Vision", "Professional Photography", "Memorable Moments", "Artistic Excellence", "Personal Connection"]
+            suggested_tags = ["#Photography", "#Professional", "#Creative", "#Memories", "#ArtisticVision", "#PhotoShoot"]
+            creative_direction = "Showcase photographer's artistic vision and technical expertise through behind-the-scenes work, stunning photo examples, and satisfied clients"
+            
+        elif any(term in url_text_lower for term in ['art', 'artist', 'design', 'creative', 'gallery', 'artwork']):
+            industry = "Art & Design"
+            business_description = f"{company_name} creates original artwork and design pieces, showcasing unique artistic vision and creative expression"
+            target_audience = "Art collectors, design enthusiasts, individuals seeking unique creative work, interior designers"
+            visual_themes = ["creativity", "originality", "artistic expression", "unique vision", "handcrafted"]
+            color_palette = ["creative", "vibrant", "artistic", "expressive"]
+            suggested_themes = ["Artistic Vision", "Creative Expression", "Unique Design", "Handcrafted Art", "Original Work"]
+            suggested_tags = ["#Art", "#Creative", "#Design", "#Artistic", "#Original", "#Handmade"]
+            creative_direction = "Showcase the creative process, artistic workspace, and finished artwork that demonstrates unique artistic vision and skill"
+            
+        elif any(term in url_text_lower for term in ['restaurant', 'food', 'dining', 'chef', 'cuisine', 'menu']):
+            industry = "Food & Dining"
+            business_description = f"{company_name} provides exceptional dining experiences with carefully crafted cuisine and welcoming atmosphere"
+            target_audience = "Food enthusiasts, diners seeking quality cuisine, local community, special occasion celebrants"
+            visual_themes = ["culinary excellence", "fresh ingredients", "dining experience", "hospitality", "flavor"]
+            color_palette = ["warm", "appetizing", "inviting", "rich"]
+            suggested_themes = ["Culinary Excellence", "Fresh Ingredients", "Dining Experience", "Hospitality", "Flavor Journey"]
+            suggested_tags = ["#Food", "#Dining", "#Culinary", "#Fresh", "#Delicious", "#Hospitality"]
+            creative_direction = "Showcase delicious food preparation, restaurant atmosphere, and satisfied diners enjoying memorable culinary experiences"
+            
+        elif any(term in url_text_lower for term in ['fitness', 'gym', 'training', 'health', 'wellness', 'exercise']):
+            industry = "Fitness & Wellness"
+            business_description = f"{company_name} provides fitness training and wellness services to help clients achieve their health goals"
+            target_audience = "Health-conscious individuals, fitness enthusiasts, people seeking lifestyle transformation, wellness seekers"
+            visual_themes = ["strength", "transformation", "healthy lifestyle", "energy", "motivation"]
+            color_palette = ["energetic", "vibrant", "motivating", "healthy"]
+            suggested_themes = ["Fitness Journey", "Healthy Lifestyle", "Strength Building", "Wellness", "Transformation"]
+            suggested_tags = ["#Fitness", "#Health", "#Wellness", "#Training", "#Lifestyle", "#Motivation"]
+            creative_direction = "Showcase active lifestyle, training sessions, fitness transformations, and the energy of wellness-focused living"
+            
+        elif any(term in url_text_lower for term in ['tech', 'software', 'app', 'digital', 'ai', 'technology']):
             industry = "Technology"
             business_description = f"{company_name} provides innovative technology solutions and digital services"
             target_audience = "Tech professionals, businesses, digital users, innovators"
-            visual_themes = ["innovation", "technology", "digital", "modern", "efficient"]
+            visual_themes = ["innovation", "technology", "digital", "modern", "efficient", "solutions"]
             color_palette = ["tech", "modern", "sleek", "professional"]
-            suggested_themes = ["Innovation", "Technology", "Digital", "Efficiency", "Modern"]
+            suggested_themes = ["Innovation", "Technology", "Digital Solutions", "Efficiency", "Modern Tech"]
             suggested_tags = ["#Tech", "#Innovation", "#Digital", "#Software", "#Technology", "#TechSolutions"]
             creative_direction = "Showcase technology solutions in professional business contexts, emphasizing innovation and efficiency"
             
+        elif any(term in url_text_lower for term in ['fashion', 'clothing', 'apparel', 'style', 'boutique']):
+            industry = "Fashion & Apparel"
+            business_description = f"{company_name} provides stylish fashion and apparel for discerning customers"
+            target_audience = "Fashion-conscious individuals, style enthusiasts, trendsetters, quality-seeking consumers"
+            visual_themes = ["style", "fashion", "trends", "quality", "elegance", "personal expression"]
+            color_palette = ["stylish", "elegant", "trendy", "sophisticated"]
+            suggested_themes = ["Style Excellence", "Fashion Forward", "Quality Apparel", "Personal Style", "Trendsetting"]
+            suggested_tags = ["#Fashion", "#Style", "#Apparel", "#Trendy", "#Quality", "#Elegant"]
+            creative_direction = "Showcase stylish clothing, fashion-forward looks, and confident people expressing their personal style"
+            
+        elif any(term in url_text_lower for term in ['consulting', 'consultant', 'advisory', 'business', 'strategy']):
+            industry = "Business Consulting"
+            business_description = f"{company_name} provides expert business consulting and strategic advisory services"
+            target_audience = "Business owners, executives, entrepreneurs, organizations seeking growth and improvement"
+            visual_themes = ["expertise", "strategy", "growth", "professional", "results", "leadership"]
+            color_palette = ["professional", "trustworthy", "authoritative", "modern"]
+            suggested_themes = ["Expert Guidance", "Strategic Growth", "Business Excellence", "Professional Results", "Leadership"]
+            suggested_tags = ["#Consulting", "#Business", "#Strategy", "#Growth", "#Professional", "#Results"]
+            creative_direction = "Showcase professional expertise, strategic thinking, and successful business outcomes through confident leadership imagery"
+            
         else:
-            # Generic business analysis
+            # Generic business analysis - but still better than before
             industry = "Professional Services"
             business_description = f"{company_name} provides professional products and services to meet customer needs"
-            target_audience = "Business professionals, consumers, clients"
-            visual_themes = ["professional", "quality", "trustworthy", "reliable", "service"]
+            target_audience = "Business professionals, consumers, clients seeking quality service"
+            visual_themes = ["professional", "quality", "trustworthy", "reliable", "service", "excellence"]
             color_palette = ["professional", "clean", "trustworthy", "modern"]
-            suggested_themes = ["Professional", "Quality", "Service", "Trust", "Excellence"]
+            suggested_themes = ["Professional Excellence", "Quality Service", "Trusted Partner", "Customer Focus", "Reliable Solutions"]
             suggested_tags = ["#Business", "#Professional", "#Quality", "#Service", "#Excellence", "#Trusted"]
-            creative_direction = "Showcase professional services and products in clean, trustworthy business contexts"
+            creative_direction = "Showcase professional services and products in clean, trustworthy business contexts with focus on customer satisfaction"
         
         # Return structured business context based on real content analysis
         return {

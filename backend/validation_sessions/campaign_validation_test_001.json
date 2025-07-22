@@ -1,0 +1,17 @@
+{
+  "campaign_id": "validation_test_001",
+  "creation_timestamp": "2025-07-21T00:48:27.250135",
+  "last_updated": "2025-07-21T00:48:27.250763",
+  "campaign_name": "System Validation Campaign",
+  "campaign_description": null,
+  "business_analysis": null,
+  "content_strategy": null,
+  "visual_guidance": null,
+  "social_media_config": null,
+  "generation_history": [],
+  "version": 1,
+  "active_agents": [],
+  "completed_stages": [],
+  "session_id": "08ba1089-44ca-451f-b856-64faed3997b9",
+  "persistent": true
+}

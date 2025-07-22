@@ -279,6 +279,36 @@ def generate_enhanced_content(post_type: PostType, business_context: dict, index
 def generate_contextual_hashtags(business_context: dict) -> List[str]:
     """Generate AI-powered, context-aware hashtags based on business and product analysis."""
     
+    # PRIORITY 1: Use business analysis agent's suggested tags if available
+    campaign_guidance = business_context.get('campaign_guidance', {})
+    business_suggested_tags = campaign_guidance.get('suggested_tags', [])
+    
+    # Also check at root level for suggested_tags
+    if not business_suggested_tags:
+        business_suggested_tags = business_context.get('suggested_tags', [])
+    
+    # If we have business-specific tags from the analysis agent, prioritize them
+    if business_suggested_tags:
+        logger.info(f"✅ Using {len(business_suggested_tags)} business-specific hashtags from analysis agent")
+        # Clean and validate the tags
+        hashtags = []
+        for tag in business_suggested_tags:
+            if isinstance(tag, str) and len(tag) > 2:
+                # Ensure tag starts with # 
+                clean_tag = tag if tag.startswith('#') else f"#{tag}"
+                hashtags.append(clean_tag)
+        
+        # Return business-specific tags with maybe 1-2 generic supplements
+        if len(hashtags) >= 5:
+            return hashtags[:6]  # Use business tags only
+        else:
+            # Add 1-2 generic supplement tags
+            hashtags.extend(["#Business", "#Growth"])
+            return hashtags[:6]
+    
+    # FALLBACK: Generate contextual hashtags if no business analysis tags available
+    logger.info("⚠️ No business-specific hashtags found, generating contextual ones")
+    
     # Extract comprehensive business context
     company_name = business_context.get('company_name', 'YourBusiness')
     business_type = business_context.get('business_type', 'corporation')
@@ -292,8 +322,6 @@ def generate_contextual_hashtags(business_context: dict) -> List[str]:
     has_specific_product = product_context.get('has_specific_product', False)
     product_themes = product_context.get('product_themes', [])
     
-    # Extract campaign themes
-    campaign_guidance = business_context.get('campaign_guidance', {})
     content_themes = campaign_guidance.get('content_themes', {})
     primary_themes = content_themes.get('primary_themes', [])
     

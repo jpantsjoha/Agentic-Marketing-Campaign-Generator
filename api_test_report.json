@@ -1,0 +1,14 @@
+{
+  "summary": {
+    "passed": 7,
+    "failed": 2,
+    "skipped": 0
+  },
+  "working_features": [
+    "\u2705 V1 API endpoints functional",
+    "\u2705 ADK framework integration",
+    "\u2705 Session and artifact services"
+  ],
+  "missing_features": [],
+  "campaign_id": null
+}

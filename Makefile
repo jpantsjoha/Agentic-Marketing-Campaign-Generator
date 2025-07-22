@@ -1,9 +1,9 @@
-# AI Marketing Campaign Post Generator - Makefile  
-# Author: JP + 2025-06-28 (v1.0.1alpha-blog-post)
+# AI Marketing Campaign Post Generator - Enhanced ADK v1.6+ Makefile  
+# Author: JP + 2025-01-20 (ADK v1.6+ Enhanced Edition)
 # 3 Musketeers pattern for consistent development workflow
-# Uses Docker, Docker Compose, and Make for environment consistency
+# Enhanced with ADK v1.6+ hot reload, A2A messaging, and enhanced memory
 
-.PHONY: help install install-frontend install-backend dev dev-frontend dev-backend test test-frontend test-backend test-ui test-api health-check launch runtime status-check build clean lint format docker-build docker-run docker-dev docker-test test-unit test-integration test-e2e test-coverage launch-all test-full-stack setup-database start-backend start-frontend stop-all clean-logs
+.PHONY: help install install-frontend install-backend dev dev-frontend dev-backend dev-enhanced dev-hot-reload test test-frontend test-backend test-ui test-api test-enhanced test-a2a test-memory health-check launch runtime status-check build clean lint format docker-build docker-run docker-dev docker-test test-unit test-integration test-e2e test-coverage launch-all launch-enhanced test-full-stack setup-database start-backend start-frontend stop-all clean-logs setup-enhanced-sessions
 
 # Environment Detection
 DOCKER_AVAILABLE := $(shell command -v docker 2> /dev/null)
@@ -210,6 +210,161 @@ test-full-stack: ## 🧪 Comprehensive full-stack testing (Frontend + Backend + 
 setup-database: ## 🗄️ Initialize SQLite database with schema
 	@echo "🗄️  Setting up SQLite database..."
 	@cd backend && python3 -c "import os; os.makedirs('data', exist_ok=True); from database.database import init_database; init_database(); print('✅ Database setup complete!')"
+
+# =============================================================================
+# ENHANCED ADK v1.6+ DEVELOPMENT COMMANDS
+# =============================================================================
+
+setup-enhanced-sessions: ## 🚀 Setup enhanced session storage for ADK v1.6+
+	@echo "🚀 Setting up enhanced session storage..."
+	@mkdir -p campaign_sessions
+	@mkdir -p backend/data/enhanced_memory
+	@echo "📁 Created campaign sessions directory: campaign_sessions"
+	@echo "📁 Created enhanced memory directory: backend/data/enhanced_memory"
+	@echo "✅ Enhanced session storage ready"
+
+dev-enhanced: ## 🚀 Start enhanced ADK v1.6+ development environment
+	@echo "🚀 Starting Enhanced ADK v1.6+ Development Environment"
+	@echo "======================================================="
+	@make setup-enhanced-sessions
+	@make setup-logging
+	@echo ""
+	@echo "🔧 Features enabled:"
+	@echo "   • A2A Messaging"
+	@echo "   • Persistent Memory"
+	@echo "   • Structured Context"
+	@echo "   • Event-Driven Coordination"
+	@echo ""
+	@echo "🚀 Starting enhanced backend server..."
+	@cd backend && python3 -c "import asyncio; from agents.enhanced_marketing_orchestrator_v2 import create_enhanced_marketing_orchestrator; print('✅ Enhanced orchestrator validation passed')" && \
+	python3 -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --log-level debug --reload &
+	@sleep 3
+	@echo "🎨 Starting frontend server..."
+	@if [ "$(BUN_AVAILABLE)" ]; then \
+		bun run dev --port 8080 2>&1 | tee -a $(FRONTEND_LOG_FILE) & \
+	elif [ "$(NODE_AVAILABLE)" ]; then \
+		npm run dev -- --port 8080 2>&1 | tee -a $(FRONTEND_LOG_FILE) & \
+	else \
+		echo "❌ No Node.js or Bun found"; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "✅ Enhanced ADK v1.6+ Environment Ready!"
+	@echo "🌐 Frontend: http://localhost:8080"
+	@echo "🔧 Backend API: http://localhost:8000"
+	@echo "📚 API Docs: http://localhost:8000/docs"
+	@echo "🔥 Enhanced Campaigns: http://localhost:8000/api/v2/campaigns"
+	@echo "📊 Memory Stats: http://localhost:8000/api/v2/campaigns/debug/memory-stats"
+
+dev-hot-reload: ## 🔥 Start development with ADK v1.6+ hot reload enabled
+	@echo "🔥 Starting ADK v1.6+ Hot Reload Development"
+	@echo "============================================"
+	@make setup-enhanced-sessions
+	@echo "🔥 Hot reload features:"
+	@echo "   • Agent hot reload enabled"
+	@echo "   • A2A message bus active"
+	@echo "   • Real-time code updates"
+	@echo ""
+	@cd backend && python3 -c "print('🔥 Starting with --reload_agents flag...')" && \
+	python3 -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+
+launch-enhanced: ## 🚀 Launch complete enhanced ADK v1.6+ stack
+	@echo "🚀 Launching Enhanced ADK v1.6+ Marketing Platform"
+	@echo "=================================================="
+	@make setup-enhanced-sessions
+	@make setup-logging
+	@make setup-database
+	@echo ""
+	@echo "🎯 Enhanced features active:"
+	@echo "   ✅ A2A Messaging"
+	@echo "   ✅ Persistent Memory"
+	@echo "   ✅ Structured Context"
+	@echo "   ✅ Event-Driven Coordination"
+	@echo "   ✅ Session Persistence"
+	@echo "   ✅ Campaign Versioning"
+	@echo ""
+	@echo "🔧 Starting enhanced backend..."
+	@cd backend && python3 -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload &
+	@sleep 3
+	@echo "🎨 Starting frontend..."
+	@if [ "$(BUN_AVAILABLE)" ]; then \
+		bun run dev --port 8080 & \
+	elif [ "$(NODE_AVAILABLE)" ]; then \
+		npm run dev -- --port 8080 & \
+	fi
+	@sleep 2
+	@echo ""
+	@echo "🎉 Enhanced ADK v1.6+ Platform Launched!"
+	@echo "========================================"
+	@echo "🌐 Frontend:           http://localhost:8080"
+	@echo "🔧 Backend API:        http://localhost:8000"
+	@echo "📚 API Documentation: http://localhost:8000/docs"
+	@echo ""
+	@echo "🚀 Enhanced API Endpoints:"
+	@echo "📋 Enhanced Campaigns: http://localhost:8000/api/v2/campaigns"
+	@echo "📊 Memory Statistics:  http://localhost:8000/api/v2/campaigns/debug/memory-stats"
+	@echo "💬 A2A Messages:       http://localhost:8000/api/v2/campaigns/{id}/messages"
+	@echo "📈 Campaign Status:    http://localhost:8000/api/v2/campaigns/{id}/status"
+	@echo ""
+	@echo "📄 Logs:"
+	@echo "🔧 Backend:  $(BACKEND_LOG_FILE)"
+	@echo "🎨 Frontend: $(FRONTEND_LOG_FILE)"
+
+# =============================================================================
+# ENHANCED TESTING COMMANDS
+# =============================================================================
+
+test-enhanced: ## 🧪 Run enhanced ADK v1.6+ tests
+	@echo "🧪 Running Enhanced ADK v1.6+ Tests"
+	@echo "===================================="
+	@make setup-enhanced-sessions
+	@cd backend && python3 -m pytest tests/test_enhanced_adk_upgrade.py -v --tb=short
+	@echo "✅ Enhanced ADK tests complete"
+
+test-a2a: ## 💬 Test A2A messaging system
+	@echo "💬 Testing A2A Messaging System"
+	@echo "==============================="
+	@cd backend && python3 -m pytest tests/test_enhanced_adk_upgrade.py::TestA2AMessaging -v --tb=short
+	@echo "✅ A2A messaging tests complete"
+
+test-memory: ## 🧠 Test enhanced memory service
+	@echo "🧠 Testing Enhanced Memory Service"
+	@echo "=================================="
+	@cd backend && python3 -m pytest tests/test_enhanced_adk_upgrade.py::TestEnhancedMemoryService -v --tb=short
+	@echo "✅ Enhanced memory tests complete"
+
+test-context-fidelity: ## 🎯 Test campaign context fidelity
+	@echo "🎯 Testing Campaign Context Fidelity"
+	@echo "===================================="
+	@cd backend && python3 -m pytest tests/test_enhanced_adk_upgrade.py::TestCampaignContextFidelity -v --tb=short
+	@echo "✅ Context fidelity tests complete"
+
+test-orchestrator: ## 🎭 Test enhanced orchestrator
+	@echo "🎭 Testing Enhanced Orchestrator"
+	@echo "==============================="
+	@cd backend && python3 -m pytest tests/test_enhanced_adk_upgrade.py::TestEnhancedOrchestrator -v --tb=short
+	@echo "✅ Enhanced orchestrator tests complete"
+
+test-performance: ## ⚡ Test enhanced system performance
+	@echo "⚡ Testing Enhanced System Performance"
+	@echo "====================================="
+	@cd backend && python3 -m pytest tests/test_enhanced_adk_upgrade.py::TestPerformanceAndStress -v --tb=short
+	@echo "✅ Performance tests complete"
+
+test-enhanced-full: ## 🧪 Run complete enhanced test suite
+	@echo "🧪 Running Complete Enhanced ADK v1.6+ Test Suite"
+	@echo "================================================="
+	@make test-context-fidelity
+	@echo ""
+	@make test-memory
+	@echo ""
+	@make test-a2a
+	@echo ""
+	@make test-orchestrator
+	@echo ""
+	@make test-performance
+	@echo ""
+	@echo "🎉 Complete Enhanced Test Suite Passed!"
 
 start-backend: ## 🔧 Start backend server with DEBUG logging to file
 	@echo "🔧 Starting backend server with DEBUG logging to file..."

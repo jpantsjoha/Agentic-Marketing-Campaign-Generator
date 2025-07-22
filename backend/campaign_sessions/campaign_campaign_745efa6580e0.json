@@ -1,0 +1,17 @@
+{
+  "campaign_id": "campaign_745efa6580e0",
+  "creation_timestamp": "2025-07-21T00:42:43.832376",
+  "last_updated": "2025-07-21T00:42:43.832388",
+  "campaign_name": "Enhanced V2 Test Campaign",
+  "campaign_description": "Testing enhanced ADK v1.6+ features",
+  "business_analysis": null,
+  "content_strategy": null,
+  "visual_guidance": null,
+  "social_media_config": null,
+  "generation_history": [],
+  "version": 1,
+  "active_agents": [],
+  "completed_stages": [],
+  "session_id": "9c91e47c-b31c-4e72-9771-74ce539e536c",
+  "persistent": true
+}

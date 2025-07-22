@@ -450,9 +450,15 @@ async def execute_campaign_workflow(
 
     try:
         # Step 1: Business Analysis
-        # This step creates a detailed analysis from the provided description
-        business_analysis = await _extract_business_context_from_description(
-            business_description, target_audience, objective, campaign_type
+        # CRITICAL FIX: Use URLAnalysisAgent when URLs are provided, fallback to description analysis
+        business_analysis = await _comprehensive_business_analysis(
+            business_description=business_description,
+            target_audience=target_audience,
+            objective=objective,
+            campaign_type=campaign_type,
+            business_website=business_website,
+            about_page_url=about_page_url,
+            product_service_url=product_service_url
         )
         if not business_analysis:
             logger.error(f"Business analysis failed for campaign {campaign_id}.")
@@ -530,6 +536,65 @@ async def execute_campaign_workflow(
             "error": f"An unexpected error occurred in the campaign workflow: {str(e)}",
             "campaign_id": campaign_id
         }
+
+async def _comprehensive_business_analysis(
+    business_description: str,
+    target_audience: str,
+    objective: str,
+    campaign_type: str,
+    business_website: Optional[str] = None,
+    about_page_url: Optional[str] = None,
+    product_service_url: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Comprehensive business analysis using URLAnalysisAgent when URLs are available,
+    otherwise fallback to description-based analysis.
+    """
+    
+    # Collect all available URLs
+    urls_to_analyze = []
+    if business_website:
+        urls_to_analyze.append(business_website)
+    if about_page_url:
+        urls_to_analyze.append(about_page_url)
+    if product_service_url:
+        urls_to_analyze.append(product_service_url)
+    
+    # If URLs are available, use the URLAnalysisAgent for comprehensive analysis
+    if urls_to_analyze:
+        logger.info(f"🔍 Using URLAnalysisAgent to analyze {len(urls_to_analyze)} URLs")
+        try:
+            url_analysis_agent = URLAnalysisAgent()
+            url_analysis_result = await url_analysis_agent.analyze_urls(
+                urls=urls_to_analyze,
+                analysis_type="comprehensive"
+            )
+            
+            # Extract the business analysis from URL analysis result
+            if url_analysis_result and url_analysis_result.get("business_analysis"):
+                business_analysis = url_analysis_result["business_analysis"]
+                
+                # Enhance with campaign-specific context
+                business_analysis["target_audience"] = target_audience
+                business_analysis["objective"] = objective
+                business_analysis["campaign_type"] = campaign_type
+                business_analysis["business_description"] = business_description
+                
+                logger.info(f"✅ URL analysis complete for {business_analysis.get('company_name', 'business')}")
+                logger.info(f"   Industry: {business_analysis.get('industry', 'N/A')}")
+                logger.info(f"   Suggested Tags: {len(business_analysis.get('suggested_tags', []))}")
+                
+                return business_analysis
+            else:
+                logger.warning("URL analysis returned no business analysis, falling back to description analysis")
+        except Exception as e:
+            logger.error(f"URLAnalysisAgent failed: {e}, falling back to description analysis")
+    
+    # Fallback to description-based analysis
+    logger.info("📝 Using description-based business analysis (no URLs provided or URL analysis failed)")
+    return await _extract_business_context_from_description(
+        business_description, target_audience, objective, campaign_type
+    )
 
 async def _extract_business_context_from_description(
     business_description: str,

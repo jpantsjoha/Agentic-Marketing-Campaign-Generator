@@ -1,0 +1,17 @@
+{
+  "campaign_id": "test_campaign_001",
+  "creation_timestamp": "2025-07-20T20:03:44.918658",
+  "last_updated": "2025-07-20T20:03:44.918671",
+  "campaign_name": "Backend Test Campaign",
+  "campaign_description": null,
+  "business_analysis": null,
+  "content_strategy": null,
+  "visual_guidance": null,
+  "social_media_config": null,
+  "generation_history": [],
+  "version": 1,
+  "active_agents": [],
+  "completed_stages": [],
+  "session_id": "c0e2ec8e-2c3a-4a52-8653-371823a05026",
+  "persistent": true
+}

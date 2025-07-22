@@ -1414,7 +1414,7 @@ const IdeationPage: React.FC = () => {
 
           {/* Campaign Media Tuning */}
           <div className="vvl-card p-6 mb-8">
-            <h3 className="text-lg font-semibold vvl-text-primary mb-4">Campaign Media Tuning (Optional)</h3>
+            <h3 className="text-lg font-semibold vvl-text-primary mb-4">Campaign Tuning (Optional)</h3>
             <p className="text-sm vvl-text-secondary mb-3">
               Fine-tune your visual content generation by specifying design preferences, visual styles, colors, moods, or specific requirements for images and videos.
             </p>
