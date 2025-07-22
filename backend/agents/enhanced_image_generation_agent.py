@@ -460,40 +460,45 @@ Always prioritize:
         industry = business_context.get('industry', 'Business')
         brand_voice = business_context.get('brand_voice', 'professional')
         
-        # Create campaign-aware image prompt
-        enhanced_prompt = f"""
-        Create a high-quality, professional marketing image for {company_name} in the {industry} industry.
-        
-        Base concept: {base_prompt}
-        
-        Visual requirements:
-        - Style: {brand_voice}, modern, and visually appealing
-        - Quality: High-resolution, sharp, and professional
-        - Composition: Well-balanced, engaging, and suitable for social media
-        - Colors: Cohesive color palette that matches brand aesthetic
-        - Lighting: Professional lighting that enhances the subject
-        
-        Content guidance:
-        - Showcase {company_name}'s brand personality
-        - Appeal to target audience: {business_context.get('target_audience', 'general audience')}
-        - Align with campaign objective: {campaign_guidance.get('objective', 'brand awareness') if campaign_guidance else 'brand awareness'}
-        - Reflect {industry} industry standards and expectations
-        
-        Visual elements to include:
-        - Professional photography or illustration style
-        - Relevant props, settings, or backgrounds for {industry}
-        - People or products that represent the target audience
-        - Brand-appropriate mood and atmosphere
-        
-        Avoid:
-        - Text overlays or captions
-        - Low-quality or pixelated imagery
-        - Inappropriate or off-brand content
-        - Cluttered or confusing compositions
-        - Overly busy or distracting backgrounds
-        """
+        # Create industry-specific image prompt
+        enhanced_prompt = self._create_business_specific_prompt(industry, company_name, base_prompt, business_context, campaign_guidance)
         
         return enhanced_prompt.strip()
+    
+    def _create_business_specific_prompt(self, industry: str, company_name: str, base_prompt: str, business_context: Dict[str, Any], campaign_guidance: Dict[str, Any] = None) -> str:
+        """Create industry-specific image generation prompt"""
+        target_audience = business_context.get('target_audience', 'general audience')
+        
+        # Create industry-specific visual prompt
+        if industry.lower() == 'photography':
+            prompt = f"Professional photography portfolio image showcasing {company_name}'s photography services and artistic style. "
+            prompt += f"High-quality camera equipment, beautiful composition, behind-the-scenes photographer work, "
+            prompt += f"elegant studio lighting or natural outdoor photography setting. "
+            prompt += f"Context: {base_prompt[:150]} - Style: Professional, artistic, high-end photography aesthetic. "
+            prompt += f"NO TEXT OVERLAYS or written words in the image."
+        elif industry.lower() == 'food':
+            prompt = f"Appetizing food photography for {company_name} restaurant/catering business. "
+            prompt += f"Beautiful plated dishes, fresh ingredients, elegant presentation, warm restaurant ambiance. "
+            prompt += f"Context: {base_prompt[:150]} - Style: Food photography, mouth-watering, professional culinary presentation."
+        elif industry.lower() == 'fitness':
+            prompt = f"Dynamic fitness and wellness imagery for {company_name}. "
+            prompt += f"Athletic equipment, gym environment, healthy lifestyle, energetic workout scenes. "
+            prompt += f"Context: {base_prompt[:150]} - Style: Motivational, energetic, health-focused."
+        elif industry.lower() == 'tech':
+            prompt = f"Modern technology and innovation imagery for {company_name}. "
+            prompt += f"Clean minimalist design, digital interfaces, professional tech environment. "
+            prompt += f"Context: {base_prompt[:150]} - Style: Modern, sleek, innovative technology aesthetic."
+        elif industry.lower() == 'art':
+            prompt = f"Creative artistic imagery showcasing {company_name}'s artistic work and studio. "
+            prompt += f"Art supplies, creative workspace, artistic compositions, gallery-worthy presentation. "
+            prompt += f"Context: {base_prompt[:150]} - Style: Creative, artistic, inspiring aesthetic."
+        else:
+            # Generic professional business prompt
+            prompt = f"Professional business marketing image for {company_name}. "
+            prompt += f"Clean, modern business environment appropriate for their industry. "
+            prompt += f"Context: {base_prompt[:150]} - Style: Professional, trustworthy, business-focused."
+        
+        return prompt
     
     async def generate_images_for_posts(
         self, 

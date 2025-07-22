@@ -273,9 +273,51 @@ const generateBusinessTags = (businessAnalysis: any): string[] => {
 };
 
 const mockGenerateThemesAndTags = (description: string, objective: string): { themes: string[], tags: string[] } => {
+  // Detect business type from description for contextual fallback tags
+  const desc = description.toLowerCase();
+  const obj = objective.toLowerCase();
+  
+  // Photography business detection
+  if (desc.includes('photography') || desc.includes('photographer') || desc.includes('photo') || 
+      desc.includes('wedding') || desc.includes('portrait') || desc.includes('studio') ||
+      obj.includes('photography') || obj.includes('photographer')) {
+    return {
+      themes: ['Professional', 'Artistic', 'Creative', 'Elegant', 'Memorable'],
+      tags: ['Photography', 'WeddingPhotographer', 'PortraitPhotography', 'ProfessionalHeadshots', 'ArtisticPhotography', 'StudioPhotography']
+    };
+  }
+  
+  // Food/Restaurant business detection
+  if (desc.includes('food') || desc.includes('restaurant') || desc.includes('catering') ||
+      desc.includes('chef') || desc.includes('cuisine') || desc.includes('dining')) {
+    return {
+      themes: ['Delicious', 'Fresh', 'Artisanal', 'Quality', 'Memorable'],
+      tags: ['FoodPhotography', 'Restaurant', 'Catering', 'ChefSpecial', 'FreshIngredients', 'CulinaryArt']
+    };
+  }
+  
+  // Fitness business detection
+  if (desc.includes('fitness') || desc.includes('gym') || desc.includes('workout') ||
+      desc.includes('health') || desc.includes('wellness') || desc.includes('trainer')) {
+    return {
+      themes: ['Energetic', 'Motivational', 'Healthy', 'Strong', 'Transformative'],
+      tags: ['Fitness', 'Gym', 'Workout', 'HealthyLifestyle', 'PersonalTrainer', 'WellnessJourney']
+    };
+  }
+  
+  // Tech business detection
+  if (desc.includes('tech') || desc.includes('software') || desc.includes('app') ||
+      desc.includes('digital') || desc.includes('developer') || desc.includes('startup')) {
+    return {
+      themes: ['Innovative', 'Modern', 'Efficient', 'Scalable', 'User-Friendly'],
+      tags: ['Technology', 'Software', 'Innovation', 'DigitalTransformation', 'TechSolutions', 'StartupLife']
+    };
+  }
+  
+  // Generic business fallback
   return {
     themes: ['Professional', 'Modern', 'Innovative', 'Trustworthy', 'Friendly'],
-    tags: ['Business', 'Tech', 'Growth', 'Solutions', 'Digital', 'Success']
+    tags: ['Professional', 'QualityService', 'CustomerFocused', 'Innovation', 'Excellence', 'Growth']
   };
 };
 
