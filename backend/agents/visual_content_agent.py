@@ -895,7 +895,7 @@ class VideoGenerationAgent:
     def __init__(self):
         """Initialize video generation agent."""
         self.gemini_api_key = os.getenv('GEMINI_API_KEY')
-        self.video_model = os.getenv('VIDEO_MODEL', 'veo-2.0-generate-001')
+        self.video_model = os.getenv('VIDEO_MODEL', 'veo-3.0-generate-preview')
         self.max_videos = safe_int_env('MAX_TEXT_VIDEO_POSTS', '3')  # Reduced for cost savings
         self.video_storage_dir = Path("data/videos/generated")
         self.video_storage_dir.mkdir(parents=True, exist_ok=True)
@@ -1066,7 +1066,7 @@ class VideoGenerationAgent:
                 logger.info(f"🎬 Starting Veo 2.0 operation: '{veo_prompt[:50]}...'")
                 
                 operation = client.models.generate_videos(
-                    model="veo-2.0-generate-001",
+                    model="veo-3.0-generate-preview",
                     prompt=veo_prompt,
                     config=types.GenerateVideosConfig(
                         person_generation="allow_adult",  # Allow adults for marketing content
@@ -1125,7 +1125,7 @@ class VideoGenerationAgent:
                             "generation_method": "veo_2.0_api",
                             "status": "success",
                             "metadata": {
-                                "model": "veo-2.0-generate-001",
+                                "model": "veo-3.0-generate-preview",
                                 "duration": "5s",
                                 "format": "mp4",
                                 "resolution": "720p",

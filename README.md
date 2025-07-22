@@ -21,7 +21,7 @@ An open-source, AI-powered marketing campaign generator that demonstrates the po
 
 - **✅ Google AI Library Migration**: Migrated from deprecated `google-generativeai` to official `google-genai` library (v1.23.0+)
 - **🖼️ Real Image Generation**: Imagen 3 now generates actual 1.6MB PNG images instead of 8KB blue placeholders  
-- **🎬 Video Generation**: Implemented Veo 2.0 API for real video content generation (fully functional)
+- **🎬 Video Generation**: Upgraded to Veo 3.0 Preview API for next-generation video content (fully functional)
 - **🔧 API Response Fixes**: Fixed Imagen API response parsing that was causing "no images" errors
 - **🎯 UI Button Integration**: Fixed `/generate-visuals` endpoint to use same working ADK agents
 - **📝 Text Avoidance**: Added comprehensive "no text overlays" instructions to all visual prompts
@@ -77,7 +77,7 @@ A comprehensive deep-dive into the technical architecture, development challenge
 | **Creative Ideation** | AI-powered campaign concepts and themes | Idea Agent |
 | **Content Generation** | Social media posts with hashtags and optimization | Content Agent |
 | **Visual Content** | AI-generated images using Google Imagen 3.0 with autonomous validation | ADK ImageGenerationAgent |
-| **Video Generation** | Real video creation with Google Veo 2.0 with autonomous validation | ADK VideoGenerationAgent |
+| **Video Generation** | Real video creation with Google Veo 3.0 Preview with autonomous validation | ADK VideoGenerationAgent |
 | **Social Media Publishing** | OAuth architecture implemented, publishing logic partial | Social Media Agent |
 | **Campaign Scheduling** | Schedule and manage multi-platform posting | Scheduling Agent |
 | **Multi-Format Export** | JSON, CSV, XLSX export capabilities | API Layer |

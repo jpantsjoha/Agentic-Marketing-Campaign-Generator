@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 # Configuration
 GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-2.0-pro')
 IMAGE_MODEL = os.getenv('IMAGE_MODEL', 'gemini-2.0-flash-exp-image-generation')
-VIDEO_MODEL = os.getenv('VIDEO_MODEL', 'veo-2.0')
+VIDEO_MODEL = os.getenv('VIDEO_MODEL', 'veo-3.0-generate-preview')
 
 class VisualContentValidationTool:
     """Tool for validating generated visual content quality and relevance."""
@@ -349,63 +349,110 @@ If validation fails, analyze the feedback and refine your approach autonomously.
         campaign_guidance: Dict[str, Any], 
         business_context: Dict[str, Any]
     ) -> str:
-        """Create enhanced image prompt incorporating comprehensive campaign guidance."""
+        """Create enhanced image prompt incorporating comprehensive campaign guidance and business-specific context."""
         
-        base_prompt = f"Create a professional marketing image for: {post_content}"
+        # CRITICAL FIX: Start with business-specific context, not generic post content
+        company_name = business_context.get("company_name", "Business")
+        industry = business_context.get("industry", "").lower()
         
-        # ENHANCED: Use creative direction from AI analysis
+        # Build business-specific base prompt
+        if "photography" in industry:
+            base_prompt = f"Professional photography portfolio image showcasing {company_name}'s photography services and style"
+        elif "art" in industry or "design" in industry:
+            base_prompt = f"Creative artistic portfolio image showcasing {company_name}'s artistic work and creative vision"
+        elif "restaurant" in industry or "food" in industry:
+            base_prompt = f"Appetizing food photography showcasing {company_name}'s culinary offerings and dining experience"
+        elif "fitness" in industry or "health" in industry:
+            base_prompt = f"Active lifestyle photography showcasing {company_name}'s fitness and wellness approach"
+        elif "tech" in industry or "software" in industry:
+            base_prompt = f"Modern technology imagery showcasing {company_name}'s innovative digital solutions"
+        else:
+            base_prompt = f"Professional marketing image showcasing {company_name}'s {industry} business and services"
+        
+        # Incorporate post content as context, not the main focus
+        if post_content and len(post_content.strip()) > 0:
+            base_prompt += f", relevant to: {post_content[:100]}"
+        
+        # ENHANCED: Extract and prioritize specific product context
+        product_context = business_context.get("product_context", {})
+        if product_context:
+            primary_products = product_context.get("primary_products", [])
+            if primary_products and len(primary_products) > 0:
+                main_product = primary_products[0]
+                base_prompt += f", featuring {main_product}"
+            
+            visual_themes = product_context.get("visual_themes", [])
+            if visual_themes:
+                themes_text = ", ".join(visual_themes[:3])
+                base_prompt += f", incorporating themes of {themes_text}"
+            
+            brand_personality = product_context.get("brand_personality", "")
+            if brand_personality:
+                base_prompt += f", conveying {brand_personality} brand personality"
+        
+        # ENHANCED: Use creative direction from AI analysis (with business context priority)
         if campaign_guidance.get("creative_direction"):
             creative_direction = campaign_guidance["creative_direction"]
-            base_prompt += f" Creative direction: {creative_direction[:200]}."
+            base_prompt += f". Creative direction: {creative_direction[:150]}"
         
         # ENHANCED: Use detailed visual style guidance
         visual_style = campaign_guidance.get("visual_style", {})
         if isinstance(visual_style, dict):
             if visual_style.get("photography_style"):
-                base_prompt += f" Photography style: {visual_style['photography_style']}."
+                base_prompt += f". Photography style: {visual_style['photography_style']}"
+            if visual_style.get("environment"):
+                base_prompt += f". Setting: {visual_style['environment']}"
             if visual_style.get("mood"):
-                base_prompt += f" Mood: {visual_style['mood']}."
+                base_prompt += f". Mood: {visual_style['mood']}"
             if visual_style.get("lighting"):
-                base_prompt += f" Lighting: {visual_style['lighting']}."
+                base_prompt += f". Lighting: {visual_style['lighting']}"
             if visual_style.get("composition"):
-                base_prompt += f" Composition: {visual_style['composition']}."
+                base_prompt += f". Composition: {visual_style['composition']}"
         elif isinstance(visual_style, str) and visual_style:
-            base_prompt += f" Visual style: {visual_style}."
+            base_prompt += f". Visual style: {visual_style}"
         
         # ENHANCED: Use Imagen-specific prompts from analysis
         imagen_prompts = campaign_guidance.get("imagen_prompts", {})
         if imagen_prompts:
             if imagen_prompts.get("environment"):
-                base_prompt += f" Environment: {imagen_prompts['environment']}."
+                base_prompt += f". Environment details: {imagen_prompts['environment']}"
+            if imagen_prompts.get("subject_focus"):
+                base_prompt += f". Focus on: {imagen_prompts['subject_focus']}"
             if imagen_prompts.get("style_modifiers"):
                 modifiers = ", ".join(imagen_prompts["style_modifiers"][:3])
-                base_prompt += f" Style: {modifiers}."
+                base_prompt += f". Style modifiers: {modifiers}"
             if imagen_prompts.get("technical_specs"):
-                base_prompt += f" Technical: {imagen_prompts['technical_specs']}."
+                base_prompt += f". Technical specs: {imagen_prompts['technical_specs']}"
         
         # ENHANCED: Use content themes for emotional direction
         content_themes = campaign_guidance.get("content_themes", {})
         if content_themes:
+            if content_themes.get("primary_themes"):
+                themes = ", ".join(content_themes["primary_themes"][:2])
+                base_prompt += f". Primary themes: {themes}"
             if content_themes.get("emotional_triggers"):
                 emotions = ", ".join(content_themes["emotional_triggers"][:2])
-                base_prompt += f" Emotional tone: {emotions}."
+                base_prompt += f". Emotional tone: {emotions}"
             if content_themes.get("visual_metaphors"):
                 metaphors = ", ".join(content_themes["visual_metaphors"][:2])
-                base_prompt += f" Visual metaphors: {metaphors}."
+                base_prompt += f". Visual metaphors: {metaphors}"
         
-        # Original campaign context (fallback)
-        if campaign_guidance.get("brand_voice"):
-            base_prompt += f" Brand voice: {campaign_guidance['brand_voice']}."
+        # Business context integration (detailed)
+        target_audience = business_context.get("target_audience", "")
+        if target_audience:
+            base_prompt += f". Target audience: {target_audience[:100]}"
         
-        if campaign_guidance.get("target_audience"):
-            base_prompt += f" Target audience: {campaign_guidance['target_audience']}."
-        
-        # Add business context
-        if business_context.get("company_name"):
-            base_prompt += f" Company: {business_context['company_name']}."
-        
-        if business_context.get("industry"):
-            base_prompt += f" Industry: {business_context['industry']}."
+        # Industry-specific visual requirements
+        if "photography" in industry:
+            base_prompt += ". Show photographer with professional equipment, beautiful composed shots, or stunning photo examples"
+        elif "art" in industry or "design" in industry:
+            base_prompt += ". Show creative workspace, artistic tools, or beautiful artwork examples"
+        elif "restaurant" in industry or "food" in industry:
+            base_prompt += ". Show delicious food, restaurant ambiance, or happy diners"
+        elif "fitness" in industry:
+            base_prompt += ". Show people exercising, fitness equipment, or healthy active lifestyle"
+        elif "tech" in industry:
+            base_prompt += ". Show modern technology, clean interfaces, or people using digital solutions"
         
         # Add quality specifications
         base_prompt += " High quality, professional, social media optimized, brand consistent, engaging composition."
@@ -672,62 +719,105 @@ If validation fails, analyze the feedback and refine your approach autonomously.
         campaign_guidance: Dict[str, Any], 
         business_context: Dict[str, Any]
     ) -> str:
-        """Create enhanced video prompt incorporating comprehensive campaign guidance."""
+        """Create enhanced video prompt incorporating comprehensive campaign guidance and business-specific context."""
         
-        base_prompt = f"Create a professional marketing video for: {post_content}"
+        # CRITICAL FIX: Start with business-specific context for video
+        company_name = business_context.get("company_name", "Business")
+        industry = business_context.get("industry", "").lower()
+        
+        # Build business-specific base video prompt
+        if "photography" in industry:
+            base_prompt = f"Professional video showcasing {company_name}'s photography work: behind-the-scenes photographer at work, stunning photo reveals, or portfolio showcase"
+        elif "art" in industry or "design" in industry:
+            base_prompt = f"Creative video showcasing {company_name}'s artistic process: artist at work, creative inspiration, or artwork creation timelapse"
+        elif "restaurant" in industry or "food" in industry:
+            base_prompt = f"Appetizing video showcasing {company_name}'s culinary experience: food preparation, dining atmosphere, or satisfied customers"
+        elif "fitness" in industry or "health" in industry:
+            base_prompt = f"Dynamic fitness video showcasing {company_name}'s approach: people exercising, training sessions, or wellness journey"
+        elif "tech" in industry or "software" in industry:
+            base_prompt = f"Modern tech video showcasing {company_name}'s innovation: product demos, user interactions, or digital solutions in action"
+        else:
+            base_prompt = f"Professional marketing video showcasing {company_name}'s {industry} business: services in action, satisfied customers, or business expertise"
+        
+        # Incorporate post content as context for video narrative
+        if post_content and len(post_content.strip()) > 0:
+            base_prompt += f", telling the story of: {post_content[:100]}"
+        
+        # ENHANCED: Extract and prioritize specific product context for video
+        product_context = business_context.get("product_context", {})
+        if product_context:
+            primary_products = product_context.get("primary_products", [])
+            if primary_products and len(primary_products) > 0:
+                main_product = primary_products[0]
+                base_prompt += f", featuring {main_product} in action"
+            
+            target_scenarios = product_context.get("target_scenarios", [])
+            if target_scenarios:
+                scenario = target_scenarios[0]
+                base_prompt += f", showing {scenario}"
         
         # ENHANCED: Use creative direction from AI analysis
         if campaign_guidance.get("creative_direction"):
             creative_direction = campaign_guidance["creative_direction"]
-            base_prompt += f" Creative direction: {creative_direction[:200]}."
+            base_prompt += f". Creative direction: {creative_direction[:150]}"
         
         # ENHANCED: Use Veo-specific prompts from analysis
         veo_prompts = campaign_guidance.get("veo_prompts", {})
         if veo_prompts:
             if veo_prompts.get("movement_style"):
-                base_prompt += f" Movement: {veo_prompts['movement_style']}."
+                base_prompt += f". Camera movement: {veo_prompts['movement_style']}"
             if veo_prompts.get("scene_composition"):
-                base_prompt += f" Composition: {veo_prompts['scene_composition']}."
+                base_prompt += f". Scene composition: {veo_prompts['scene_composition']}"
             if veo_prompts.get("storytelling"):
-                base_prompt += f" Story: {veo_prompts['storytelling']}."
+                base_prompt += f". Narrative approach: {veo_prompts['storytelling']}"
+            if veo_prompts.get("product_demonstration"):
+                base_prompt += f". Product demo style: {veo_prompts['product_demonstration']}"
         
         # ENHANCED: Use detailed visual style guidance for video
         visual_style = campaign_guidance.get("visual_style", {})
         if isinstance(visual_style, dict):
             if visual_style.get("photography_style"):
                 # Adapt photography style for video
-                video_style = visual_style["photography_style"].replace("photography", "videography")
-                base_prompt += f" Video style: {video_style}."
+                video_style = visual_style["photography_style"].replace("photography", "videography").replace("image", "video")
+                base_prompt += f". Video style: {video_style}"
+            if visual_style.get("environment"):
+                base_prompt += f". Setting: {visual_style['environment']}"
             if visual_style.get("mood"):
-                base_prompt += f" Mood: {visual_style['mood']}."
+                base_prompt += f". Mood: {visual_style['mood']}"
             if visual_style.get("lighting"):
-                base_prompt += f" Lighting: {visual_style['lighting']}."
+                base_prompt += f". Lighting: {visual_style['lighting']}"
         elif isinstance(visual_style, str) and visual_style:
-            base_prompt += f" Visual style: {visual_style}."
+            base_prompt += f". Visual style: {visual_style.replace('photography', 'videography')}"
         
         # ENHANCED: Use content themes for video emotional direction
         content_themes = campaign_guidance.get("content_themes", {})
         if content_themes:
+            if content_themes.get("primary_themes"):
+                themes = ", ".join(content_themes["primary_themes"][:2])
+                base_prompt += f". Primary themes: {themes}"
             if content_themes.get("emotional_triggers"):
                 emotions = ", ".join(content_themes["emotional_triggers"][:2])
-                base_prompt += f" Emotional tone: {emotions}."
+                base_prompt += f". Emotional tone: {emotions}"
             if content_themes.get("call_to_action_style"):
                 cta_style = content_themes["call_to_action_style"]
-                base_prompt += f" Call-to-action style: {cta_style}."
+                base_prompt += f". Call-to-action style: {cta_style}"
         
-        # Original campaign context (fallback)
-        if campaign_guidance.get("brand_voice"):
-            base_prompt += f" Brand voice: {campaign_guidance['brand_voice']}."
+        # Business context integration for video
+        target_audience = business_context.get("target_audience", "")
+        if target_audience:
+            base_prompt += f". Target audience: {target_audience[:100]}"
         
-        if campaign_guidance.get("target_audience"):
-            base_prompt += f" Target audience: {campaign_guidance['target_audience']}."
-        
-        # Add business context
-        if business_context.get("company_name"):
-            base_prompt += f" Company: {business_context['company_name']}."
-        
-        if business_context.get("industry"):
-            base_prompt += f" Industry: {business_context['industry']}."
+        # Industry-specific video requirements
+        if "photography" in industry:
+            base_prompt += ". Show professional photographer in action, camera equipment, beautiful photo reveals, or satisfied clients viewing their photos"
+        elif "art" in industry or "design" in industry:
+            base_prompt += ". Show artist creating, tools and materials, creative process, or artwork coming to life"
+        elif "restaurant" in industry or "food" in industry:
+            base_prompt += ". Show chef preparing food, sizzling dishes, restaurant atmosphere, or happy customers dining"
+        elif "fitness" in industry:
+            base_prompt += ". Show people working out, trainer coaching, fitness transformations, or healthy active lifestyle"
+        elif "tech" in industry:
+            base_prompt += ". Show software interfaces, people using technology, problem-solving in action, or digital innovation"
         
         # Add video-specific requirements
         base_prompt += " Duration: 15-30 seconds, high quality, professional, social media optimized, engaging, brand consistent."
@@ -861,22 +951,65 @@ campaign-aligned visual content with autonomous validation and self-correction."
         campaign_guidance: Dict[str, Any] = None,
         campaign_id: str = "default"
     ) -> Dict[str, Any]:
-        """Generate visual content for social posts using autonomous agents."""
+        """Generate visual content for social posts using autonomous agents with enhanced business context integration."""
         
         logger.info(f"🎯 Starting agentic visual content generation for {len(social_posts)} posts")
         
+        # CRITICAL FIX: Ensure campaign guidance uses business context if missing
         if not campaign_guidance:
             campaign_guidance = {}
         
+        # Extract and enhance campaign guidance with business context
+        if not campaign_guidance.get('creative_direction') and business_context.get('campaign_guidance'):
+            business_campaign_guidance = business_context.get('campaign_guidance', {})
+            campaign_guidance.update(business_campaign_guidance)
+            logger.info(f"📋 Enhanced campaign guidance with business context: {len(campaign_guidance)} fields")
+        
         # Debug: Log received campaign guidance
-        logger.info(f"📋 Received campaign guidance keys: {list(campaign_guidance.keys())}")
+        logger.info(f"📋 Final campaign guidance keys: {list(campaign_guidance.keys())}")
         if campaign_guidance.get('creative_direction'):
             logger.info(f"🎨 Creative direction: {campaign_guidance['creative_direction'][:100]}...")
         if campaign_guidance.get('visual_style'):
-            logger.info(f"🎭 Visual style: {campaign_guidance['visual_style']}")
+            logger.info(f"🎭 Visual style: {str(campaign_guidance['visual_style'])[:100]}...")
         
         # Add campaign objective to guidance
         campaign_guidance["objective"] = campaign_objective
+        
+        # ENHANCED: Ensure business context includes detailed information for visual generation
+        enhanced_business_context = business_context.copy()
+        
+        # Add industry-specific visual requirements if missing
+        industry = enhanced_business_context.get("industry", "").lower()
+        if not enhanced_business_context.get("visual_requirements"):
+            if "photography" in industry:
+                enhanced_business_context["visual_requirements"] = {
+                    "show_professional_equipment": True,
+                    "include_artistic_elements": True,
+                    "focus_on_creativity": True,
+                    "avoid_generic_business": True
+                }
+            elif "art" in industry or "design" in industry:
+                enhanced_business_context["visual_requirements"] = {
+                    "show_creative_process": True,
+                    "include_artistic_tools": True,
+                    "focus_on_originality": True,
+                    "avoid_corporate_style": True
+                }
+            elif "food" in industry or "restaurant" in industry:
+                enhanced_business_context["visual_requirements"] = {
+                    "show_food_preparation": True,
+                    "include_dining_atmosphere": True,
+                    "focus_on_appetite_appeal": True,
+                    "avoid_generic_business": True
+                }
+        
+        # Log enhanced business context for debugging
+        logger.info(f"🔍 Enhanced business context - Company: {enhanced_business_context.get('company_name')}, Industry: {enhanced_business_context.get('industry')}")
+        if enhanced_business_context.get("product_context"):
+            product_themes = enhanced_business_context["product_context"].get("visual_themes", [])
+            logger.info(f"🎨 Product visual themes: {product_themes[:3]}")
+        
+        business_context = enhanced_business_context
         
         results = {
             "success": True,
