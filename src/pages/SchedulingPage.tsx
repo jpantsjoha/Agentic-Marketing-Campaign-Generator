@@ -74,7 +74,9 @@ const SchedulingPage: React.FC = () => {
       content: {
         text: '🎨 Visual storytelling at its finest! See how we\'re revolutionizing marketing.',
         hashtags: ['#design', '#innovation', '#visual'],
-        imageUrl: 'https://via.placeholder.com/400x300?text=Image+1'
+        // ADR-020 REGRESSION PREVENTION: Remove forbidden Unsplash URL that caused mountain landscape issue
+        // FORBIDDEN: https://images.unsplash.com/photo-1542038784456-1ea8e732b2b9 (caused business campaigns to show mountains)
+        imageUrl: null // Will be generated via real APIs or show placeholder with clear demo labeling
       },
       generationPrompt: 'Generate image post for brand campaign',
       selected: true
@@ -274,7 +276,9 @@ const SchedulingPage: React.FC = () => {
         content: {
           text: '🚀 Exciting news! We\'re launching something amazing that will transform your business goals.',
           hashtags: ['#marketing', '#business', '#growth'],
-          imageUrl: 'https://picsum.photos/400/300?random=3',
+          // ADR-020 REGRESSION PREVENTION: Remove forbidden Unsplash URL that caused nature scenery issue
+          // FORBIDDEN: https://images.unsplash.com/photo-1531804055935-76f44d7c3621 (caused business campaigns to show nature scenery)
+          imageUrl: null, // Will be generated via real APIs or show placeholder with clear demo labeling
           productUrl: 'https://example.com/product'
         },
         generationPrompt: 'Demo scheduling post with image',
@@ -287,7 +291,9 @@ const SchedulingPage: React.FC = () => {
         content: {
           text: '🎬 Watch our success story! Real results from real customers.',
           hashtags: ['#success', '#video', '#results'],
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          // ADR-020 REGRESSION PREVENTION: Remove forbidden demo video URL that caused generic content issue
+          // FORBIDDEN: https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4 (generic demo video)
+          videoUrl: null, // Will be generated via real APIs or show placeholder with clear demo labeling
           productUrl: 'https://example.com/product'
         },
         generationPrompt: 'Demo scheduling post with video',

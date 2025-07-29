@@ -7,6 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+mcp-tools
+*png
+.claude
+.pytest_cache
+
+PROMPTS
+test-results
+campaign_sessions
 node_modules
 dist
 dist-ssr
@@ -35,3 +43,4 @@ backups/
 *.db
 *.sqlite
 *.sqlite3
+*.png

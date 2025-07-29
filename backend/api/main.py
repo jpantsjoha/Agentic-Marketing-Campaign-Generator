@@ -111,6 +111,7 @@ app.add_middleware(
         "http://localhost:3000",  # React dev server
         "http://localhost:8080",  # Vite dev server
         "http://localhost:8081",  # Alternative Vite port
+        "http://localhost:8096",  # Current Vite dev server port
         "https://Agentic-Marketing-Campaign-Generator.web.app",  # Production frontend
     ],
     allow_credentials=True,

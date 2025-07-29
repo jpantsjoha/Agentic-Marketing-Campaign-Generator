@@ -55,65 +55,77 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 280 15% 5%;
+    /* Light Theme - Clean and Modern */
+    --background: 0 0% 98%;
+    --foreground: 222 16% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 280 15% 5%;
+    --card-foreground: 222 16% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 280 15% 5%;
+    --popover-foreground: 222 16% 12%;
 
-    --primary: 270 60% 54%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 174 100% 29%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 215 25% 27%;
 
-    --muted: 270 10% 96%;
-    --muted-foreground: 270 10% 25%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 270 10% 96%;
-    --accent-foreground: 270 60% 54%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 215 25% 27%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 10% 90%;
-    --input: 270 10% 90%;
-    --ring: 270 60% 54%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Modern light theme colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
   }
 
   .dark {
-    --background: 280 15% 10%;
-    --foreground: 0 0% 95%;
+    /* Keep existing dark theme for optional use */
+    --background: 222 84% 5%;
+    --foreground: 210 40% 98%;
 
-    --card: 280 15% 15%;
-    --card-foreground: 0 0% 95%;
+    --card: 222 84% 5%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 280 15% 15%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 222 84% 5%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 270 60% 70%;
-    --primary-foreground: 280 15% 10%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 16% 12%;
 
-    --secondary: 174 70% 45%;
-    --secondary-foreground: 280 15% 10%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 280 15% 20%;
-    --muted-foreground: 270 10% 70%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 280 15% 20%;
-    --accent-foreground: 0 0% 95%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 95%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 280 15% 25%;
-    --input: 280 15% 25%;
-    --ring: 270 60% 70%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
   }
 }
 
@@ -124,9 +136,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Roboto', sans-serif;
-    /* Apply consistent blue gradient background across all pages */
-    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+    font-family: 'Inter', 'Roboto', sans-serif;
+    /* Clean light background with subtle texture */
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
     min-height: 100vh;
   }
 
@@ -185,51 +197,51 @@
     @apply relative overflow-hidden;
   }
 
-  /* AI Marketing Campaign Post Generator Blue Theme */
+  /* Video Venture Launch - Modern Light Theme */
   .vvl-gradient-bg {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
   }
 
   .vvl-card {
-    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg shadow-lg;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    @apply bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .vvl-card-hover {
-    @apply transition-all duration-300 hover:bg-white/15 hover:shadow-xl;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    @apply transition-all duration-300 hover:shadow-lg hover:scale-[1.02];
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .vvl-card-hover:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   }
 
   .vvl-button-primary {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
   }
 
   .vvl-button-secondary {
-    @apply bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 font-medium px-6 py-3 rounded-lg transition-all duration-200;
+    @apply bg-secondary border border-border text-secondary-foreground hover:bg-secondary/80 font-medium px-6 py-3 rounded-lg transition-all duration-200;
   }
 
   .vvl-input {
-    @apply bg-white/10 backdrop-blur-sm border border-white/30 text-white placeholder-gray-300 rounded-lg px-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200;
+    @apply bg-background border border-input text-foreground placeholder-muted-foreground rounded-lg px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200;
   }
 
-  /* Ensure input text is always visible and dark on light backgrounds */
+  /* Ensure input text is properly styled for light theme */
   .vvl-input input, .vvl-input {
-    color: white !important;
+    color: hsl(var(--foreground)) !important;
   }
 
   /* For select dropdowns, ensure options are visible */
   .vvl-input select {
-    color: white !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: hsl(var(--foreground)) !important;
+    background-color: hsl(var(--background)) !important;
   }
 
   .vvl-input option {
-    @apply bg-slate-800 text-white;
+    @apply bg-background text-foreground;
   }
 
   /* Override shadcn/ui input text color for VVL styling */
@@ -237,20 +249,20 @@
   textarea.vvl-input,
   textarea.vvl-textarea,
   select.vvl-input {
-    color: white !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: hsl(var(--foreground)) !important;
+    background-color: hsl(var(--background)) !important;
   }
 
   /* Ensure placeholder text is visible */
   input.vvl-input::placeholder,
   textarea.vvl-input::placeholder,
   textarea.vvl-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: hsl(var(--muted-foreground)) !important;
   }
 
   /* Textarea specific styling for consistency */
   .vvl-textarea {
-    @apply bg-white/10 backdrop-blur-sm border border-white/30 text-white placeholder-gray-300 rounded-lg px-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200 resize-none;
+    @apply bg-background border border-input text-foreground placeholder-muted-foreground rounded-lg px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 resize-none;
   }
 
   /* Ensure all textarea elements use VVL styling */
@@ -259,19 +271,38 @@
   }
 
   .vvl-text-primary {
-    @apply text-white;
+    @apply text-foreground;
   }
 
   .vvl-text-secondary {
-    @apply text-gray-300;
+    @apply text-foreground/80;
   }
 
   .vvl-text-accent {
-    @apply bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent;
+    @apply text-primary;
+  }
+
+  /* Fix for social media post content readability */
+  .social-post-content {
+    @apply text-foreground !important;
+    opacity: 1.0 !important;
+  }
+
+  /* Fix for overly light gray text */
+  .text-gray-300 {
+    @apply text-foreground/90 !important;
+  }
+
+  .text-gray-400 {
+    @apply text-foreground/80 !important;
+  }
+
+  .text-gray-500 {
+    @apply text-foreground/70 !important;
   }
 
   .vvl-header-blur {
-    @apply bg-slate-900/80 backdrop-blur-md border-b border-white/10;
+    @apply bg-background/80 backdrop-blur-md border-b border-border;
   }
 }
 
@@ -304,23 +335,23 @@
   animation: ai-pulse 1.5s ease-in-out infinite;
 }
 
-/* Global text visibility improvements */
+/* Global text visibility improvements for light theme */
 .vvl-gradient-bg input:not(.vvl-input),
 .vvl-gradient-bg textarea:not(.vvl-textarea),
 .vvl-gradient-bg select {
-  color: #1f2937 !important; /* Dark gray text for non-VVL inputs */
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: hsl(var(--foreground)) !important;
+  background-color: hsl(var(--background)) !important;
 }
 
 .vvl-gradient-bg input:not(.vvl-input)::placeholder,
 .vvl-gradient-bg textarea:not(.vvl-textarea)::placeholder {
-  color: rgba(31, 41, 55, 0.6) !important;
+  color: hsl(var(--muted-foreground)) !important;
 }
 
 /* Ensure labels are always visible */
 .vvl-gradient-bg label {
-  color: white !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  color: hsl(var(--foreground)) !important;
+  font-weight: 500;
 }
 
 /* Progress bar animation */
@@ -344,4 +375,75 @@
 
 .animate-progress {
   animation: progress 8s ease-in-out;
+}
+
+/* Modern Light Theme Component Classes */
+.vvl-section {
+  @apply bg-card border border-border rounded-xl p-6 shadow-sm;
+}
+
+.vvl-header {
+  @apply bg-card border-b border-border px-6 py-4;
+}
+
+.vvl-content {
+  @apply p-6;
+}
+
+.vvl-button-outline {
+  @apply border border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground font-medium px-6 py-3 rounded-lg transition-all duration-200;
+}
+
+.vvl-button-ghost {
+  @apply bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground font-medium px-6 py-3 rounded-lg transition-all duration-200;
+}
+
+.vvl-badge {
+  @apply inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary;
+}
+
+.vvl-badge-secondary {
+  @apply inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground;
+}
+
+.vvl-badge-success {
+  @apply inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700;
+}
+
+.vvl-badge-warning {
+  @apply inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-700;
+}
+
+.vvl-badge-error {
+  @apply inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700;
+}
+
+/* Enhanced focus states for accessibility */
+.vvl-focus {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+/* Modern loading states */
+.vvl-loading {
+  @apply opacity-50 pointer-events-none;
+}
+
+.vvl-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid hsl(var(--primary));
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }

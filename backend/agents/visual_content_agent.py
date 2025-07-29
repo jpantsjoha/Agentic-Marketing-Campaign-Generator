@@ -475,7 +475,11 @@ class ImageGenerationAgent:
             return [self._generate_fallback_image(f"Image {i+1}", i) for i in range(min(len(prompts), self.max_images))]
     
     async def _generate_real_image(self, prompt: str, index: int, campaign_id: str) -> Dict[str, Any]:
-        """Generate real image using Google Imagen with comprehensive debug logging."""
+        """
+        Generate real image using Google Imagen with context fidelity validation.
+        
+        ADR-020 Compliance: Includes post-generation validation to ensure no forbidden demo URLs.
+        """
         debug_context = {
             "method": "_generate_real_image",
             "campaign_id": campaign_id,
@@ -514,6 +518,10 @@ class ImageGenerationAgent:
             if cached_image:
                 logger.info(f"✅ CACHE_HIT: Found cached image for campaign '{campaign_id}'")
                 print(f"✅ Using cached image for campaign '{campaign_id}', image {index+1}")
+                
+                # ADR-020 REQUIREMENT: Validate cached image doesn't violate context fidelity
+                self._validate_generated_content_url(cached_image, debug_context)
+                
                 return {
                     "id": f"imagen_cached_{index+1}",
                     "prompt": marketing_prompt,
@@ -527,7 +535,8 @@ class ImageGenerationAgent:
                         "generation_time": 0.1,
                         "aspect_ratio": "16:9",
                         "quality": "high",
-                        "marketing_optimized": True
+                        "marketing_optimized": True,
+                        "context_fidelity": "validated"
                     }
                 }
             
@@ -611,6 +620,9 @@ class ImageGenerationAgent:
             logger.info(f"💾 IMAGE_SAVED: URL: {image_url}")
             print(f"💾 Image saved successfully for campaign '{campaign_id}': {image_url}")
             
+            # ADR-020 REQUIREMENT: Validate generated content doesn't violate context fidelity
+            self._validate_generated_content_url(image_url, debug_context)
+            
             # CACHE THE GENERATED IMAGE for future consistent UX
             logger.info(f"🗄️ CACHE_STORE_START: Caching generated image")
             cache_success = self.cache.cache_image(marketing_prompt, self.image_model, campaign_id, image_url, is_current=True)
@@ -631,7 +643,8 @@ class ImageGenerationAgent:
                     "quality": "high",
                     "marketing_optimized": True,
                     "cached": False,
-                    "file_size_kb": image_size/1024
+                    "file_size_kb": image_size/1024,
+                    "context_fidelity": "validated"
                 }
             }
             
@@ -653,8 +666,38 @@ class ImageGenerationAgent:
             # Fall back to enhanced placeholder (which now returns error state)
             return self._generate_enhanced_placeholder(prompt, index)
     
+    def _validate_generated_content_url(self, image_url: str, debug_context: Dict[str, Any]) -> None:
+        """
+        ADR-020 REQUIREMENT: Post-generation content validation.
+        
+        Validates that generated content doesn't contain forbidden demo URLs that violate context fidelity.
+        """
+        if not image_url:
+            return  # Allow None URLs for error states
+        
+        # ADR-020 FORBIDDEN: Demo URLs that caused the original regression
+        forbidden_demo_urls = [
+            'https://images.unsplash.com/photo-1542038784456-1ea8e732b2b9',
+            'https://images.unsplash.com/photo-1531804055935-76f44d7c3621',
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            'https://via.placeholder.com',
+            'https://picsum.photos'
+        ]
+        
+        for forbidden_url in forbidden_demo_urls:
+            if image_url.startswith(forbidden_url):
+                error_msg = f"CONTEXT_FIDELITY_VIOLATION: Forbidden demo URL detected: {image_url}"
+                logger.error(f"❌ {error_msg}: {debug_context}")
+                raise ValueError(error_msg)
+        
+        logger.debug(f"✅ CONTENT_VALIDATION_PASSED: Generated URL is contextually appropriate: {image_url[:100]}...")
+    
     async def _save_generated_image_data(self, image_data_bytes: bytes, index: int, campaign_id: str = "default") -> str:
-        """Save generated image data as actual file and return URL."""
+        """
+        Save generated image data as actual file and return URL.
+        
+        ADR-020 COMPLIANCE: Raises exception instead of returning forbidden placeholder URL on failure.
+        """
         try:
             # Create images directory structure: data/images/generated/<campaign_id>/
             images_dir = Path("data/images/generated") / campaign_id
@@ -676,11 +719,18 @@ class ImageGenerationAgent:
             return file_url
             
         except Exception as e:
-            logger.error(f"Failed to save generated image file: {e}")
-            return f"https://via.placeholder.com/400x300/4F46E5/FFFFFF?text=Generated+Image+{index+1}"
+            error_msg = f"Failed to save generated image file: {e}"
+            logger.error(f"❌ {error_msg}")
+            # ADR-020: Raise exception instead of returning forbidden placeholder URL
+            raise Exception(f"CONTEXT_FIDELITY_VIOLATION: {error_msg}")
     
     def _enhance_prompt_with_context(self, base_prompt: str, business_context: Dict[str, Any]) -> str:
-        """Enhance image prompt with comprehensive business context and campaign guidance."""
+        """
+        CONTEXT FIDELITY VALIDATION: Enhance image prompt with comprehensive business context and campaign guidance.
+        
+        ADR-020 Compliance: This method ensures all visual content is contextually relevant to the specific business
+        and validates that no forbidden content types are included in the generated prompts.
+        """
         
         company_name = business_context.get('company_name', 'Company')
         industry = business_context.get('industry', 'business')
@@ -688,7 +738,10 @@ class ImageGenerationAgent:
         visual_elements = business_context.get('visual_elements', 'modern, clean design')
         key_themes = business_context.get('key_themes', [])
         
-        # Build enhanced prompt
+        # ADR-020 REQUIREMENT: Validate input context before enhancement
+        self._validate_generation_context(business_context, base_prompt)
+        
+        # Build enhanced prompt with business context integration
         enhanced_prompt = f"{base_prompt}"
         
         # ENHANCED: Use campaign guidance if available in business context
@@ -718,6 +771,16 @@ class ImageGenerationAgent:
                     modifiers = ", ".join(imagen_prompts["style_modifiers"][:2])
                     enhanced_prompt += f", {modifiers}"
         
+        # ADR-020 REQUIREMENT: Company and industry context must be included
+        enhanced_prompt += f", {company_name} {industry}"
+        
+        # ADR-020 REQUIREMENT: Product-specific context (if available)
+        product_context = business_context.get('product_context', {})
+        if product_context.get('has_specific_product'):
+            product_name = product_context.get('product_name', '')
+            if product_name:
+                enhanced_prompt += f", featuring {product_name}"
+        
         # Add brand context (fallback/additional)
         if 'professional' in brand_voice.lower():
             enhanced_prompt += ", professional and polished style"
@@ -726,13 +789,17 @@ class ImageGenerationAgent:
         if 'modern' in visual_elements.lower():
             enhanced_prompt += ", modern design elements"
         
-        # Add industry context
+        # ADR-020 REQUIREMENT: Industry-specific context mapping
         if 'technology' in industry.lower():
             enhanced_prompt += ", tech-focused imagery with digital elements"
         elif 'healthcare' in industry.lower():
             enhanced_prompt += ", clean medical aesthetic with health-focused elements"
         elif 'finance' in industry.lower():
             enhanced_prompt += ", professional financial imagery with trust elements"
+        elif 'restaurant' in industry.lower() or 'food' in industry.lower():
+            enhanced_prompt += ", restaurant setting, food service context"
+        elif 'apparel' in industry.lower() or 'fashion' in industry.lower():
+            enhanced_prompt += ", apparel design, fashion context"
         
         # Add theme-based enhancements
         if 'innovation' in key_themes:
@@ -748,7 +815,44 @@ class ImageGenerationAgent:
         # Add text avoidance instructions
         enhanced_prompt += ", no text overlays, no written words, purely visual content"
         
+        # ADR-020 REQUIREMENT: Validate enhanced prompt doesn't contain prohibited contexts
+        self._validate_enhanced_prompt(enhanced_prompt)
+        
         return enhanced_prompt
+    
+    def _validate_generation_context(self, business_context: Dict[str, Any], post_content: str) -> None:
+        """
+        ADR-020 REQUIREMENT: Pre-generation context validation.
+        
+        Validates that required business context is present for contextually relevant generation.
+        """
+        if not business_context.get('company_name'):
+            raise ValueError("CONTEXT_FIDELITY_VIOLATION: Company name required for contextual generation")
+        
+        if not business_context.get('industry'):
+            raise ValueError("CONTEXT_FIDELITY_VIOLATION: Industry context required for contextual generation")
+        
+        if not post_content or len(post_content.strip()) == 0:
+            raise ValueError("CONTEXT_FIDELITY_VIOLATION: Post content required for contextual generation")
+        
+        logger.info(f"✅ CONTEXT_VALIDATION_PASSED: Company={business_context['company_name']}, Industry={business_context['industry']}")
+    
+    def _validate_enhanced_prompt(self, enhanced_prompt: str) -> None:
+        """
+        ADR-020 REQUIREMENT: Validate enhanced prompt doesn't contain prohibited contexts.
+        
+        Ensures enhanced prompts don't contain contexts that could lead to irrelevant imagery.
+        """
+        prompt_lower = enhanced_prompt.lower()
+        
+        # ADR-020 PROHIBITED: Generic contexts that could mislead generation
+        prohibited_contexts = ['mountain', 'landscape', 'nature', 'generic', 'wilderness', 'scenery']
+        
+        for prohibited in prohibited_contexts:
+            if prohibited in prompt_lower:
+                raise ValueError(f"CONTEXT_FIDELITY_VIOLATION: Prohibited context '{prohibited}' found in enhanced prompt")
+        
+        logger.debug(f"✅ PROMPT_VALIDATION_PASSED: No prohibited contexts detected")
     
     def _create_marketing_prompt(self, base_prompt: str, index: int) -> str:
         """
@@ -874,18 +978,24 @@ class ImageGenerationAgent:
         }
     
     def _generate_fallback_image(self, prompt: str, index: int) -> Dict[str, Any]:
-        """Generate fallback image when generation fails."""
+        """
+        Generate fallback image when generation fails.
+        
+        ADR-020 COMPLIANCE: Returns error state instead of forbidden placeholder URLs.
+        """
         return {
             "id": f"fallback_{index+1}",
             "prompt": prompt,
-            "image_url": f"https://via.placeholder.com/400x300/FF6B6B/FFFFFF?text=Generation+Failed+{index+1}",
-            "generation_method": "fallback",
-            "status": "failed",
+            "image_url": None,  # ADR-020: No forbidden placeholder URLs
+            "generation_method": "fallback_error",
+            "status": "error",
+            "error": "Image generation failed - requires proper API configuration",
             "metadata": {
                 "model": "fallback_generator",
                 "safety_rating": "unknown",
                 "generation_time": 0.1,
-                "error": "Image generation failed"
+                "error": "Image generation failed",
+                "note": "ADR-020: No placeholder URLs to prevent misleading content"
             }
         }
 

@@ -24,6 +24,50 @@ from ..models import (
 
 logger = logging.getLogger(__name__)
 
+def _validate_visual_results_context_fidelity(visual_results: dict, business_context: dict) -> None:
+    """
+    ADR-020 REQUIREMENT: Validate visual results don't contain forbidden demo URLs.
+    
+    This function prevents the regression where mountain landscape images and generic demo content
+    was shown for business marketing campaigns by validating the API response.
+    """
+    if not visual_results or not isinstance(visual_results, dict):
+        return
+    
+    # ADR-020 FORBIDDEN: Demo URLs that caused the original regression
+    forbidden_demo_urls = [
+        'https://images.unsplash.com/photo-1542038784456-1ea8e732b2b9',
+        'https://images.unsplash.com/photo-1531804055935-76f44d7c3621',
+        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        'https://via.placeholder.com',
+        'https://picsum.photos'
+    ]
+    
+    posts_with_visuals = visual_results.get("posts_with_visuals", [])
+    for post in posts_with_visuals:
+        if not isinstance(post, dict):
+            continue
+            
+        # Check image URLs
+        image_url = post.get("image_url", "")
+        if image_url:
+            for forbidden_url in forbidden_demo_urls:
+                if image_url.startswith(forbidden_url):
+                    error_msg = f"CONTEXT_FIDELITY_VIOLATION: Forbidden demo image URL in API response: {image_url}"
+                    logger.error(f"❌ {error_msg}")
+                    raise HTTPException(status_code=500, detail=error_msg)
+        
+        # Check video URLs  
+        video_url = post.get("video_url", "")
+        if video_url:
+            for forbidden_url in forbidden_demo_urls:
+                if video_url.startswith(forbidden_url):
+                    error_msg = f"CONTEXT_FIDELITY_VIOLATION: Forbidden demo video URL in API response: {video_url}"
+                    logger.error(f"❌ {error_msg}")
+                    raise HTTPException(status_code=500, detail=error_msg)
+    
+    logger.debug(f"✅ VISUAL_RESULTS_VALIDATION_PASSED: No forbidden URLs detected for {business_context.get('company_name', 'unknown')}")
+
 # Import ADK agents for real content generation
 try:
     from agents.marketing_orchestrator import execute_campaign_workflow
@@ -481,6 +525,15 @@ async def generate_visual_content(request: dict):
                     import hashlib
                     campaign_id = hashlib.md5(f"{company_name}_{campaign_objective}".encode()).hexdigest()[:8]
                 
+                # ADR-020 REQUIREMENT: Validate business context before visual generation
+                if not business_context.get('company_name'):
+                    logger.error("❌ CONTEXT_FIDELITY_VIOLATION: Missing company_name for visual generation")
+                    raise HTTPException(status_code=400, detail="Company name required for contextual visual generation")
+                
+                if not business_context.get('industry'):
+                    logger.error("❌ CONTEXT_FIDELITY_VIOLATION: Missing industry for visual generation")
+                    raise HTTPException(status_code=400, detail="Industry context required for contextual visual generation")
+                
                 visual_results = await generate_visual_content_for_posts(
                     social_posts=social_posts,
                     business_context=business_context,
@@ -488,6 +541,10 @@ async def generate_visual_content(request: dict):
                     campaign_guidance=campaign_guidance,
                     campaign_id=campaign_id
                 )
+                
+                # ADR-020 REQUIREMENT: Validate visual results don't contain forbidden URLs
+                _validate_visual_results_context_fidelity(visual_results, business_context)
+                
             else:
                 raise HTTPException(status_code=500, detail="No visual generation agents available")
         

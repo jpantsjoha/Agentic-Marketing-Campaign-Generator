@@ -1,31 +1,37 @@
 """
 FILENAME: enhanced_marketing_orchestrator_v2.py
-DESCRIPTION/PURPOSE: ADK v1.6+ Enhanced Marketing Orchestrator with A2A messaging and persistent memory
-Author: JP + Claude Code + 2025-01-20
+DESCRIPTION/PURPOSE: ADK v1.8+ Enhanced Marketing Orchestrator with streaming and advanced A2A messaging
+Author: JP + Claude Code + 2025-07-29
 
-This is the upgraded marketing orchestrator leveraging:
+This is the upgraded marketing orchestrator leveraging ADK v1.8+ features:
 - Enhanced memory service with persistent sessions
-- A2A messaging for agent coordination  
+- Advanced A2A messaging with streaming capabilities
 - Structured campaign context with zero fidelity loss
 - Event-driven parallel execution
+- Real-time streaming responses
+- Improved Model Context Protocol (MCP) integration
 """
 
 import os
 import logging
 import asyncio
 import time
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, AsyncIterator
 from datetime import datetime
 import uuid
 
-# ADK v1.6+ imports
+# ADK v1.8+ imports
 from google.adk.agents.sequential_agent import SequentialAgent
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.agents.base_agent import BaseAgent
 from google.adk.agents.parallel_agent import ParallelAgent
+from google.adk.agents.loop_agent import LoopAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.invocation_context import InvocationContext
+from google.adk.agents.active_streaming_tool import ActiveStreamingTool
 from google.adk.models import Gemini
+from google.adk.memory import InMemoryMemoryService, VertexAiMemoryBankService
+from google.adk.agents.run_config import RunConfig
 
 # Import enhanced services and models
 try:
@@ -688,6 +694,148 @@ class EnhancedMarketingOrchestrator:
             "message_bus": message_stats,
             "active_campaigns": len(self.active_campaigns)
         }
+    
+    async def stream_campaign_generation(self, campaign_request: Dict[str, Any]) -> AsyncIterator[str]:
+        """Stream real-time campaign generation updates using ADK v1.8+ streaming capabilities"""
+        
+        campaign_id = campaign_request.get("campaign_id", str(uuid.uuid4()))
+        
+        try:
+            # Initialize streaming context
+            import json
+            yield json.dumps({
+                "type": "campaign_started", 
+                "campaign_id": campaign_id,
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": "Campaign generation started"
+            })
+            
+            # Create campaign context
+            context = await self.memory_service.create_campaign_context(
+                campaign_id=campaign_id,
+                campaign_name=campaign_request.get("campaign_name"),
+                campaign_description=campaign_request.get("description")
+            )
+            
+            # Add business input to context
+            if "business_url" in campaign_request:
+                context.business_url = campaign_request["business_url"]
+            
+            self.active_campaigns[campaign_id] = context
+            
+            yield json.dumps({
+                "type": "context_created",
+                "campaign_id": campaign_id,
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": "Campaign context initialized"
+            })
+            
+            # Stream business analysis
+            yield json.dumps({
+                "type": "stage_started",
+                "campaign_id": campaign_id,
+                "stage": "business_analysis",
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": "Starting business analysis..."
+            })
+            
+            # Perform business analysis with streaming updates
+            business_analysis = await self.business_agent.run(context)
+            
+            yield json.dumps({
+                "type": "stage_completed",
+                "campaign_id": campaign_id,
+                "stage": "business_analysis",
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": "Business analysis completed",
+                "data": {
+                    "company_name": business_analysis.company_name,
+                    "target_audience_summary": business_analysis.target_audience.demographics.model_dump(),
+                    "confidence_score": business_analysis.confidence_score
+                }
+            })
+            
+            # Stream content generation
+            yield json.dumps({
+                "type": "stage_started",
+                "campaign_id": campaign_id,
+                "stage": "content_generation",
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": "Generating marketing content..."
+            })
+            
+            # Generate content with business analysis context
+            content_strategy = await self.content_agent.run(context)
+            
+            yield json.dumps({
+                "type": "stage_completed",
+                "campaign_id": campaign_id,
+                "stage": "content_generation",
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": "Content generation completed",
+                "data": {
+                    "posts_generated": len(content_strategy.social_posts),
+                    "platforms": [post.platform.value for post in content_strategy.social_posts],
+                    "campaign_theme": content_strategy.campaign_theme
+                }
+            })
+            
+            # Final completion
+            yield json.dumps({
+                "type": "campaign_completed",
+                "campaign_id": campaign_id,
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": "Campaign generation completed successfully",
+                "data": {
+                    "business_analysis_summary": {
+                        "company_name": business_analysis.company_name,
+                        "confidence_score": business_analysis.confidence_score
+                    },
+                    "content_strategy_summary": {
+                        "campaign_theme": content_strategy.campaign_theme,
+                        "posts_count": len(content_strategy.social_posts)
+                    },
+                    "completion_percentage": context.get_completion_percentage()
+                }
+            })
+            
+        except Exception as e:
+            logger.error(f"❌ Streaming campaign generation failed: {e}")
+            import json
+            yield json.dumps({
+                "type": "campaign_error",
+                "campaign_id": campaign_id,
+                "timestamp": datetime.utcnow().isoformat(),
+                "message": f"Campaign generation failed: {str(e)}",
+                "error": str(e)
+            })
+        finally:
+            # Clean up active campaign tracking
+            self.active_campaigns.pop(campaign_id, None)
+    
+    async def create_streaming_tool(self) -> ActiveStreamingTool:
+        """Create ADK v1.8+ streaming tool for real-time updates"""
+        
+        def streaming_handler(query: str, campaign_id: str = None) -> AsyncIterator[str]:
+            """Handle streaming requests"""
+            async def stream():
+                yield f"Processing query: {query}"
+                if campaign_id:
+                    status = await self.get_campaign_status(campaign_id)
+                    if status:
+                        yield f"Campaign {campaign_id} progress: {status['completion_percentage']}%"
+                    else:
+                        yield f"Campaign {campaign_id} not found"
+                else:
+                    yield "No campaign ID provided"
+            
+            return stream()
+        
+        return ActiveStreamingTool(
+            name="marketing_orchestrator_stream",
+            description="Stream real-time marketing campaign generation updates",
+            handler=streaming_handler
+        )
 
 # --- Factory Functions ---
 

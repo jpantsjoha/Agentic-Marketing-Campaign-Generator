@@ -18,6 +18,7 @@ if backend_dir not in sys.path:
 from ..models import URLAnalysisRequest, URLAnalysisResponse, BusinessAnalysis
 
 # Import the business analysis service
+from agents.trending_hashtag_agent import analyze_trending_hashtags
 try:
     from agents.business_analysis_agent import analyze_business_urls
     business_analysis_service = True
@@ -51,6 +52,9 @@ def _is_valid_url(url: str) -> bool:
 async def analyze_business_url(request: URLAnalysisRequest):
     """
     Analyzes one or more business URLs to extract business context using the real AI agent.
+    
+    ADR-020 COMPLIANCE: Validates business context extraction to ensure contextually relevant
+    visual content generation downstream.
     """
     if not URLAnalysisAgent:
         logger.error("URLAnalysisAgent is not available.")
@@ -58,6 +62,12 @@ async def analyze_business_url(request: URLAnalysisRequest):
 
     try:
         logger.info(f"Received request to analyze URLs: {request.urls}")
+        
+        # ADR-020 REQUIREMENT: Validate URLs before analysis
+        for url in request.urls:
+            if not _is_valid_url(url):
+                raise HTTPException(status_code=400, detail=f"Invalid URL format: {url}")
+        
         agent = URLAnalysisAgent()
         analysis_result = await agent.analyze_urls(
             urls=request.urls,
@@ -66,6 +76,14 @@ async def analyze_business_url(request: URLAnalysisRequest):
 
         if "error" in analysis_result:
             raise HTTPException(status_code=400, detail=analysis_result["error"])
+        
+        # ADR-020 REQUIREMENT: Validate that business context was extracted
+        business_analysis = analysis_result.get("business_analysis", {})
+        if not business_analysis.get("company_name"):
+            logger.warning("⚠️ CONTEXT_FIDELITY_WARNING: No company name extracted from URL analysis")
+        
+        if not business_analysis.get("industry"):
+            logger.warning("⚠️ CONTEXT_FIDELITY_WARNING: No industry context extracted from URL analysis")
         
         logger.info("🔧 STARTING theme extraction process...")
         
@@ -170,9 +188,43 @@ async def analyze_business_url(request: URLAnalysisRequest):
             # Fallback creative themes
             suggested_themes = ["Professional", "Modern", "Clean", "Sophisticated", "Dynamic"]
         
-        # Fallback tags if none extracted
+        # Get trending hashtags if none extracted
         if not suggested_tags:
-            suggested_tags = ["#Business", "#Quality", "#Value", "#Innovation", "#Service", "#Growth"]
+            try:
+                logger.info("🔥 Getting trending hashtags for enhanced recommendations")
+                trending_result = await analyze_trending_hashtags(
+                    business_context=business_analysis,
+                    target_platforms=['instagram', 'linkedin', 'twitter']
+                )
+                trending_hashtags = [h['hashtag'] for h in trending_result.get('recommended_hashtags', [])][:8]
+                if trending_hashtags:
+                    suggested_tags = trending_hashtags
+                    logger.info(f"✅ Added {len(trending_hashtags)} trending hashtags")
+                else:
+                    # Industry-specific fallback (not generic business tags)
+                    if 'photography' in industry.lower():
+                        suggested_tags = ["#Photography", "#ProfessionalPhotography", "#PhotographyLife", "#CaptureTheMemory", "#ArtisticVision", "#PhotographyPassion"]
+                    elif 'food' in industry.lower():
+                        suggested_tags = ["#FoodieLife", "#CulinaryArt", "#FreshIngredients", "#TasteOfHome", "#LocalEats", "#FoodPhotography"]
+                    elif 'fitness' in industry.lower():
+                        suggested_tags = ["#FitnessJourney", "#HealthyLifestyle", "#FitnessMotivation", "#Wellness", "#ActiveLifestyle", "#FitnessGoals"]
+                    elif 'tech' in industry.lower():
+                        suggested_tags = ["#TechInnovation", "#DigitalTransformation", "#Innovation", "#TechTrends", "#FutureOfWork", "#Technology"]
+                    else:
+                        suggested_tags = ["#Professional", "#Excellence", "#QualityService", "#Innovation", "#TrustedPartner", "#CustomerFirst"]
+            except Exception as e:
+                logger.warning(f"⚠️ Trending hashtag analysis failed, using industry fallback: {e}")
+                # Industry-specific fallback (not generic business tags)
+                if 'photography' in industry.lower():
+                    suggested_tags = ["#Photography", "#ProfessionalPhotography", "#PhotographyLife", "#CaptureTheMemory", "#ArtisticVision", "#PhotographyPassion"]
+                elif 'food' in industry.lower():
+                    suggested_tags = ["#FoodieLife", "#CulinaryArt", "#FreshIngredients", "#TasteOfHome", "#LocalEats", "#FoodPhotography"]
+                elif 'fitness' in industry.lower():
+                    suggested_tags = ["#FitnessJourney", "#HealthyLifestyle", "#FitnessMotivation", "#Wellness", "#ActiveLifestyle", "#FitnessGoals"]
+                elif 'tech' in industry.lower():
+                    suggested_tags = ["#TechInnovation", "#DigitalTransformation", "#Innovation", "#TechTrends", "#FutureOfWork", "#Technology"]
+                else:
+                    suggested_tags = ["#Professional", "#Excellence", "#QualityService", "#Innovation", "#TrustedPartner", "#CustomerFirst"]
         
         # Remove duplicates and limit counts
         suggested_themes = list(dict.fromkeys(suggested_themes))[:8]  # Max 8 themes

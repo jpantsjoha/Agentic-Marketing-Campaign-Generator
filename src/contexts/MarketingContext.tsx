@@ -263,9 +263,24 @@ const generateBusinessTags = (businessAnalysis: any): string[] => {
     });
   }
   
-  // Add default business tags if none generated
+  // Add default business-specific tags if none generated
   if (tags.length === 0) {
-    tags.push("#Business", "#Quality", "#Value", "#Innovation", "#Service");
+    // Determine business type from description for contextual default tags
+    const businessType = description.toLowerCase();
+    if (businessType.includes('photography') || businessType.includes('photographer')) {
+      tags.push("#Photography", "#CreativeArt", "#ProfessionalPhotos", "#ArtisticVision", "#QualityService");
+    } else if (businessType.includes('food') || businessType.includes('restaurant') || businessType.includes('catering')) {
+      tags.push("#Food", "#Culinary", "#Dining", "#FreshIngredients", "#DeliciousEats");
+    } else if (businessType.includes('fitness') || businessType.includes('gym') || businessType.includes('health')) {
+      tags.push("#Fitness", "#Health", "#Wellness", "#ActiveLifestyle", "#HealthyLiving");
+    } else if (businessType.includes('tech') || businessType.includes('software') || businessType.includes('digital')) {
+      tags.push("#Technology", "#Innovation", "#Digital", "#TechSolutions", "#ModernTech");
+    } else if (businessType.includes('art') || businessType.includes('creative') || businessType.includes('design')) {
+      tags.push("#Art", "#Creative", "#Design", "#ArtisticExpression", "#CreativeWork");
+    } else {
+      // Generic professional tags as last resort
+      tags.push("#Professional", "#Quality", "#Service", "#Excellence", "#Trusted");
+    }
   }
   
   // Remove duplicates and limit
@@ -326,7 +341,7 @@ const mockGenerateIdeas = (description: string, objective: string, themes: strin
     id: `idea-${Date.now()}-${idx}`,
     title: `Marketing Idea ${idx + 1}`,
     description: `This is a generated marketing idea that aligns with your selected themes and tags. It would showcase your business in a way that meets your ${objective} objective.`,
-    imageUrl: "https://via.placeholder.com/300x200",
+    imageUrl: "https://picsum.photos/400/300?random=101",
     videoUrl: undefined, // Would be generated later
     platforms: {
       linkedin: "Sample LinkedIn post text would go here...",
@@ -342,7 +357,9 @@ const mockGenerateIdeas = (description: string, objective: string, themes: strin
 const mockGenerateVideos = (ideas: IdeaType[]): IdeaType[] => {
   return ideas.map(idea => ({
     ...idea,
-    videoUrl: "https://placeholder-videos.s3.amazonaws.com/sample.mp4" // Placeholder
+    // ADR-020 REGRESSION PREVENTION: Remove forbidden demo video URL that caused generic content issue
+    // FORBIDDEN: https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4 (generic demo video)
+    videoUrl: null // Will be generated via real APIs or show placeholder with clear demo labeling
   }));
 };
 

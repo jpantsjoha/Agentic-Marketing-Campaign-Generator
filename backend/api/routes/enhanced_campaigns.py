@@ -1,9 +1,10 @@
 """
 FILENAME: enhanced_campaigns.py
-DESCRIPTION/PURPOSE: Enhanced campaign API endpoints using ADK v1.6+ architecture
-Author: JP + Claude Code + 2025-01-20
+DESCRIPTION/PURPOSE: Enhanced campaign API endpoints using ADK v1.8+ architecture
+Author: JP + Claude Code + 2025-07-29
 
 This module provides API endpoints for the enhanced campaign system with:
+- ADK v1.8+ streaming capabilities
 - A2A messaging integration
 - Persistent campaign context
 - Real-time progress updates
@@ -15,7 +16,8 @@ import asyncio
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
+from starlette.responses import StreamingResponse as StarletteStreamingResponse
 from pydantic import BaseModel, Field
 import uuid
 
@@ -403,7 +405,7 @@ async def enhanced_system_health():
         return {
             "status": "healthy",
             "timestamp": datetime.now().isoformat(),
-            "version": "ADK v1.6+ Enhanced",
+            "version": "ADK v1.8+ Enhanced",
             "features": [
                 "A2A messaging",
                 "Persistent memory",
@@ -423,6 +425,63 @@ async def enhanced_system_health():
                 "timestamp": datetime.now().isoformat()
             }
         )
+
+@router.post("/{campaign_id}/stream")
+async def stream_campaign_generation(
+    campaign_id: str,
+    request: CampaignRequest,
+    orchestrator: EnhancedMarketingOrchestrator = Depends(get_orchestrator)
+):
+    """Stream real-time campaign generation updates using ADK v1.8+ capabilities"""
+    
+    async def generate_stream():
+        """Generate Server-Sent Events stream"""
+        try:
+            # Prepare campaign request with campaign_id
+            campaign_request = request.model_dump()
+            campaign_request["campaign_id"] = campaign_id
+            
+            async for update in orchestrator.stream_campaign_generation(campaign_request):
+                # Format as Server-Sent Events (update is already JSON string)
+                yield f"data: {update}\n\n"
+                
+                # Add small delay to ensure proper streaming
+                await asyncio.sleep(0.1)
+                
+        except Exception as e:
+            logger.error(f"❌ Streaming error: {e}")
+            import json
+            error_update = json.dumps({
+                "type": "error",
+                "message": f"Streaming failed: {str(e)}",
+                "timestamp": datetime.utcnow().isoformat()
+            })
+            yield f"data: {error_update}\n\n"
+    
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/plain",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
+    )
+
+@router.get("/stream/health")
+async def stream_health_check():
+    """Health check for streaming capabilities"""
+    return {
+        "streaming_enabled": True,
+        "adk_version": "1.8.0",
+        "features": [
+            "Real-time updates",
+            "Server-Sent Events",
+            "Campaign progress streaming",
+            "Error handling"
+        ],
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 # Export router
 __all__ = ["router"]

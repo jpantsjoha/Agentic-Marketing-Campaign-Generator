@@ -26,7 +26,7 @@ Review and update the documentation, when functionality is changed, or amended t
 
 Consult the User, and Business Logic, Solution Intent and HLD to ensure coherence and holistic solution architecture is implemented and extended as required, reducing silos
 
-We are looking to build multi-agent Agentic AI solutions leveraging the appropriate Google ADK Framework.
+We are looking to build multi-agent Agentic AI solutions leveraging the latest Google ADK Framework v1.8+.
 
 Recommend we commit, merge and release each atomic functional release along with Pull Request, so User can review and merge incremental improvements.
 
@@ -34,9 +34,9 @@ Recommend we commit, merge and release each atomic functional release along with
 
 ### CTO Vision: Technical Excellence Through Agentic AI Innovation
 **Strategic Objectives:**
-- **Revolutionary AI Architecture**: Build sophisticated multi-agent systems using Google ADK Framework v1.6+ that demonstrate technical leadership in agentic AI space
+- **Revolutionary AI Architecture**: Build sophisticated multi-agent systems using Google ADK Framework v1.8+ that demonstrate technical leadership in agentic AI space
 - **Production-Grade Quality**: Achieve enterprise-level technical maturity with 90%+ test coverage, comprehensive error handling, and scalable cloud-native architecture
-- **ADK Framework Mastery**: Leverage latest ADK v1.6+ features, memory state, and Model Context Protocol (MCP) integration
+- **ADK Framework Mastery**: Leverage latest ADK v1.8+ features, enhanced memory state, advanced Model Context Protocol (MCP) integration, and streaming capabilities
 - **Technical Differentiation**: Create technical moat through sequential agent patterns, context-aware AI workflows, and autonomous visual content generation
 
 ### CEO Vision: Market Transformation Through AI-Powered Marketing Automation  
@@ -264,6 +264,12 @@ To ensure robust frontend validation, verification, and automated testing, the f
   ```
 - **Purpose:** Provides fast, reliable browser automation and cross-browser testing for frontend UI/UX validation, supporting both headless and headed modes.
 - **Reference:** [Playwright MCP Claude Code](https://til.simonwillison.net/claude-code/playwright-mcp-claude-code)
+
+## 🔧 ENGINEERING STANDARDS
+
+### Test before Commiting and Pushing to Git. 
+1. Selenium test validate the visual functionality by codifying the necessary test (and saving against future regression)
+2. When Testing, take UI snapshots to assess visual compliance with expected UX requirement, fix or adjustment.
 
 
 # Validating Successful outcomes

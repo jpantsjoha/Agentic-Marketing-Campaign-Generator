@@ -1,9 +1,9 @@
-# AI Marketing Campaign Post Generator - Enhanced ADK v1.6+ Makefile  
-# Author: JP + 2025-01-20 (ADK v1.6+ Enhanced Edition)
+# Video Venture Launch - Enhanced ADK v1.8+ Makefile  
+# Author: JP + 2025-07-29 (ADK v1.8+ Enhanced Edition + Vercel Deployment)
 # 3 Musketeers pattern for consistent development workflow
-# Enhanced with ADK v1.6+ hot reload, A2A messaging, and enhanced memory
+# Enhanced with ADK v1.8+ hot reload, A2A messaging, enhanced memory, streaming, and Vercel deployment
 
-.PHONY: help install install-frontend install-backend dev dev-frontend dev-backend dev-enhanced dev-hot-reload test test-frontend test-backend test-ui test-api test-enhanced test-a2a test-memory health-check launch runtime status-check build clean lint format docker-build docker-run docker-dev docker-test test-unit test-integration test-e2e test-coverage launch-all launch-enhanced test-full-stack setup-database start-backend start-frontend stop-all clean-logs setup-enhanced-sessions
+.PHONY: help install install-frontend install-backend dev dev-frontend dev-backend dev-enhanced dev-hot-reload test test-frontend test-backend test-ui test-api test-enhanced test-a2a test-memory health-check launch runtime status-check build clean lint format docker-build docker-run docker-dev docker-test test-unit test-integration test-e2e test-coverage launch-all launch-enhanced test-full-stack setup-database start-backend start-frontend stop-all clean-logs setup-enhanced-sessions setup-vercel deploy deploy-preview vercel-status vercel-logs vercel-rollback
 
 # Environment Detection
 DOCKER_AVAILABLE := $(shell command -v docker 2> /dev/null)
@@ -25,8 +25,16 @@ endif
 
 # Default target
 help: ## Show this help message
-	@echo "AI Marketing Campaign Post Generator - Available Commands:"
+	@echo "Video Venture Launch - Available Commands:"
+	@echo "=========================================="
 	@echo ""
+	@echo "\033[93m🚀 Deployment Commands:\033[0m"
+	@grep -E '^(setup-vercel|deploy|deploy-preview|vercel-.*):.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+	@echo "\033[93m🔧 Development Commands:\033[0m"
+	@grep -E '^(install|dev|launch|test|build|clean):.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+	@echo "\033[93m📊 All Available Commands:\033[0m"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 # =============================================================================
@@ -212,28 +220,31 @@ setup-database: ## 🗄️ Initialize SQLite database with schema
 	@cd backend && python3 -c "import os; os.makedirs('data', exist_ok=True); from database.database import init_database; init_database(); print('✅ Database setup complete!')"
 
 # =============================================================================
-# ENHANCED ADK v1.6+ DEVELOPMENT COMMANDS
+# ENHANCED ADK v1.8+ DEVELOPMENT COMMANDS
 # =============================================================================
 
-setup-enhanced-sessions: ## 🚀 Setup enhanced session storage for ADK v1.6+
+setup-enhanced-sessions: ## 🚀 Setup enhanced session storage for ADK v1.8+
 	@echo "🚀 Setting up enhanced session storage..."
 	@mkdir -p campaign_sessions
 	@mkdir -p backend/data/enhanced_memory
+	@mkdir -p backend/data/streaming_cache
 	@echo "📁 Created campaign sessions directory: campaign_sessions"
 	@echo "📁 Created enhanced memory directory: backend/data/enhanced_memory"
+	@echo "📁 Created streaming cache directory: backend/data/streaming_cache"
 	@echo "✅ Enhanced session storage ready"
 
-dev-enhanced: ## 🚀 Start enhanced ADK v1.6+ development environment
-	@echo "🚀 Starting Enhanced ADK v1.6+ Development Environment"
+dev-enhanced: ## 🚀 Start enhanced ADK v1.8+ development environment
+	@echo "🚀 Starting Enhanced ADK v1.8+ Development Environment"
 	@echo "======================================================="
 	@make setup-enhanced-sessions
 	@make setup-logging
 	@echo ""
 	@echo "🔧 Features enabled:"
-	@echo "   • A2A Messaging"
-	@echo "   • Persistent Memory"
-	@echo "   • Structured Context"
+	@echo "   • Enhanced A2A Messaging with Streaming"
+	@echo "   • Advanced Persistent Memory"
+	@echo "   • Structured Context with MCP v2"
 	@echo "   • Event-Driven Coordination"
+	@echo "   • Real-time Streaming Responses"
 	@echo ""
 	@echo "🚀 Starting enhanced backend server..."
 	@cd backend && python3 -c "import asyncio; from agents.enhanced_marketing_orchestrator_v2 import create_enhanced_marketing_orchestrator; print('✅ Enhanced orchestrator validation passed')" && \
@@ -256,32 +267,34 @@ dev-enhanced: ## 🚀 Start enhanced ADK v1.6+ development environment
 	@echo "🔥 Enhanced Campaigns: http://localhost:8000/api/v2/campaigns"
 	@echo "📊 Memory Stats: http://localhost:8000/api/v2/campaigns/debug/memory-stats"
 
-dev-hot-reload: ## 🔥 Start development with ADK v1.6+ hot reload enabled
-	@echo "🔥 Starting ADK v1.6+ Hot Reload Development"
+dev-hot-reload: ## 🔥 Start development with ADK v1.8+ hot reload enabled
+	@echo "🔥 Starting ADK v1.8+ Hot Reload Development"
 	@echo "============================================"
 	@make setup-enhanced-sessions
 	@echo "🔥 Hot reload features:"
 	@echo "   • Agent hot reload enabled"
-	@echo "   • A2A message bus active"
+	@echo "   • Enhanced A2A message bus with streaming"
 	@echo "   • Real-time code updates"
+	@echo "   • Streaming response preview"
 	@echo ""
 	@cd backend && python3 -c "print('🔥 Starting with --reload_agents flag...')" && \
 	python3 -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
 
-launch-enhanced: ## 🚀 Launch complete enhanced ADK v1.6+ stack
-	@echo "🚀 Launching Enhanced ADK v1.6+ Marketing Platform"
+launch-enhanced: ## 🚀 Launch complete enhanced ADK v1.8+ stack
+	@echo "🚀 Launching Enhanced ADK v1.8+ Marketing Platform"
 	@echo "=================================================="
 	@make setup-enhanced-sessions
 	@make setup-logging
 	@make setup-database
 	@echo ""
 	@echo "🎯 Enhanced features active:"
-	@echo "   ✅ A2A Messaging"
-	@echo "   ✅ Persistent Memory"
-	@echo "   ✅ Structured Context"
+	@echo "   ✅ Enhanced A2A Messaging with Streaming"
+	@echo "   ✅ Advanced Persistent Memory"
+	@echo "   ✅ Structured Context with MCP v2"
 	@echo "   ✅ Event-Driven Coordination"
 	@echo "   ✅ Session Persistence"
 	@echo "   ✅ Campaign Versioning"
+	@echo "   ✅ Real-time Streaming Responses"
 	@echo ""
 	@echo "🔧 Starting enhanced backend..."
 	@cd backend && python3 -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload &
@@ -294,7 +307,7 @@ launch-enhanced: ## 🚀 Launch complete enhanced ADK v1.6+ stack
 	fi
 	@sleep 2
 	@echo ""
-	@echo "🎉 Enhanced ADK v1.6+ Platform Launched!"
+	@echo "🎉 Enhanced ADK v1.8+ Platform Launched!"
 	@echo "========================================"
 	@echo "🌐 Frontend:           http://localhost:8080"
 	@echo "🔧 Backend API:        http://localhost:8000"
@@ -305,6 +318,7 @@ launch-enhanced: ## 🚀 Launch complete enhanced ADK v1.6+ stack
 	@echo "📊 Memory Statistics:  http://localhost:8000/api/v2/campaigns/debug/memory-stats"
 	@echo "💬 A2A Messages:       http://localhost:8000/api/v2/campaigns/{id}/messages"
 	@echo "📈 Campaign Status:    http://localhost:8000/api/v2/campaigns/{id}/status"
+	@echo "🌊 Streaming Endpoint: http://localhost:8000/api/v2/campaigns/{id}/stream"
 	@echo ""
 	@echo "📄 Logs:"
 	@echo "🔧 Backend:  $(BACKEND_LOG_FILE)"
@@ -314,8 +328,8 @@ launch-enhanced: ## 🚀 Launch complete enhanced ADK v1.6+ stack
 # ENHANCED TESTING COMMANDS
 # =============================================================================
 
-test-enhanced: ## 🧪 Run enhanced ADK v1.6+ tests
-	@echo "🧪 Running Enhanced ADK v1.6+ Tests"
+test-enhanced: ## 🧪 Run enhanced ADK v1.8+ tests
+	@echo "🧪 Running Enhanced ADK v1.8+ Tests"
 	@echo "===================================="
 	@make setup-enhanced-sessions
 	@cd backend && python3 -m pytest tests/test_enhanced_adk_upgrade.py -v --tb=short
@@ -352,7 +366,7 @@ test-performance: ## ⚡ Test enhanced system performance
 	@echo "✅ Performance tests complete"
 
 test-enhanced-full: ## 🧪 Run complete enhanced test suite
-	@echo "🧪 Running Complete Enhanced ADK v1.6+ Test Suite"
+	@echo "🧪 Running Complete Enhanced ADK v1.8+ Test Suite"
 	@echo "================================================="
 	@make test-context-fidelity
 	@echo ""
@@ -1438,3 +1452,158 @@ test-clean: ## Clean test artifacts and temporary files
 	@rm -rf backend/tests/__pycache__
 	@rm -f data/test_*.db
 	@echo "✅ Test artifacts cleaned"
+
+# =============================================================================
+# VERCEL DEPLOYMENT TARGETS
+# =============================================================================
+
+setup-vercel: ## Install and setup Vercel CLI
+	@echo "🔧 Setting up Vercel CLI..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "Installing Vercel CLI globally..."; \
+		npm install -g vercel; \
+	else \
+		echo "✅ Vercel CLI already installed"; \
+	fi
+	@echo "📋 Vercel CLI setup complete"
+	@echo "🔐 Run 'vercel login' to authenticate with jpantsjoha account"
+	@echo "🔗 Run 'vercel link' to link project to Vercel"
+
+deploy-preview: build ## Deploy to Vercel preview environment
+	@echo "🚀 Deploying to Vercel preview..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@echo "📦 Building application..."
+	@npm run build
+	@echo "🌐 Deploying to preview..."
+	@vercel
+	@echo "✅ Preview deployment completed"
+
+deploy: build lint ## Deploy to Vercel production
+	@echo "🚀 Deploying to Vercel production..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@echo "📦 Building and linting application..."
+	@npm run build
+	@npm run lint
+	@echo "🌐 Deploying to production..."
+	@vercel --prod
+	@echo "✅ Production deployment completed"
+	@echo "🌍 Visit your application at the provided URL"
+
+deploy-force: ## Force deploy to production (skip build/lint checks)
+	@echo "⚠️  Force deploying to production..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@vercel --prod
+	@echo "✅ Force production deployment completed"
+
+vercel-status: ## Check Vercel deployment status
+	@echo "📊 Checking Vercel deployment status..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@vercel ls
+
+vercel-logs: ## View deployment logs
+	@echo "📋 Viewing deployment logs..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@vercel logs
+
+vercel-rollback: ## Rollback to previous deployment (requires URL input)
+	@echo "🔄 Rolling back to previous deployment..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@echo "Please provide the deployment URL to rollback to:"
+	@read -p "Deployment URL: " url; \
+	if [ -n "$$url" ]; then \
+		vercel rollback "$$url"; \
+		echo "✅ Rollback completed"; \
+	else \
+		echo "❌ No URL provided. Rollback cancelled"; \
+	fi
+
+vercel-env: ## Configure Vercel environment variables
+	@echo "🔧 Configuring Vercel environment variables..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@echo "Setting production environment variables..."
+	@if [ -f .env.production ]; then \
+		echo "📄 Found .env.production file"; \
+		echo "⚡ Setting VITE_APP_ENV..."; \
+		vercel env add VITE_APP_ENV production; \
+		echo "⚡ Setting VITE_API_BASE_URL..."; \
+		vercel env add VITE_API_BASE_URL; \
+		echo "⚡ Setting VITE_ENABLE_ANALYTICS..."; \
+		vercel env add VITE_ENABLE_ANALYTICS true; \
+		echo "⚡ Setting VITE_ENABLE_MONITORING..."; \
+		vercel env add VITE_ENABLE_MONITORING true; \
+		echo "✅ Environment variables configured"; \
+	else \
+		echo "❌ .env.production file not found"; \
+		echo "📝 Create .env.production with your production environment variables"; \
+	fi
+
+vercel-inspect: ## Inspect deployment performance
+	@echo "🔍 Inspecting deployment performance..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@echo "Please provide the deployment URL to inspect:"
+	@read -p "Deployment URL: " url; \
+	if [ -n "$$url" ]; then \
+		vercel inspect "$$url"; \
+	else \
+		echo "❌ No URL provided. Inspection cancelled"; \
+	fi
+
+# Vercel project management
+vercel-remove: ## Remove project from Vercel (WARNING: Destructive)
+	@echo "⚠️  WARNING: This will remove the project from Vercel"
+	@echo "Are you sure you want to continue? (y/N)"
+	@read -p "Confirm: " confirm; \
+	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
+		vercel remove; \
+		echo "✅ Project removed from Vercel"; \
+	else \
+		echo "❌ Operation cancelled"; \
+	fi
+
+vercel-domains: ## Manage custom domains
+	@echo "🌐 Managing Vercel domains..."
+	@if ! command -v vercel >/dev/null 2>&1; then \
+		echo "❌ Vercel CLI not found. Run 'make setup-vercel' first"; \
+		exit 1; \
+	fi
+	@vercel domains ls
+	@echo ""
+	@echo "💡 To add a custom domain:"
+	@echo "   vercel domains add yourdomain.com"
+
+# CI/CD Integration
+prod-check: ci env-check audit vercel-status ## Full production readiness check including Vercel
+	@echo "🎯 Production readiness check completed"
+	@echo "Ready for deployment: make deploy"
+
+env-check: ## Check environment variables including Vercel config
+	@echo "Environment Variables:"
+	@echo "====================="
+	@if [ -f .env.local ]; then echo "✅ .env.local found"; else echo "❌ .env.local missing"; fi
+	@if [ -f .env.production ]; then echo "✅ .env.production found"; else echo "❌ .env.production missing"; fi
+	@if [ -f vercel.json ]; then echo "✅ vercel.json found"; else echo "❌ vercel.json missing"; fi
+	@if command -v vercel >/dev/null 2>&1; then echo "✅ Vercel CLI installed"; else echo "❌ Vercel CLI missing"; fi
