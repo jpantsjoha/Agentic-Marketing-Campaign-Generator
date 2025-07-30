@@ -5,7 +5,14 @@ Author: JP + 2025-06-25
 """
 
 from .business_analysis_agent import analyze_business_urls, URLAnalysisAgent
-from .visual_content_agent import generate_visual_content_for_posts, ImageGenerationAgent, VideoGenerationAgent, VisualContentOrchestrator
+# Importing visual agents can fail in minimal test environments
+try:
+    from .visual_content_agent import generate_visual_content_for_posts, ImageGenerationAgent, VideoGenerationAgent, VisualContentOrchestrator
+except Exception:  # pragma: no cover - optional dependency
+    generate_visual_content_for_posts = None
+    ImageGenerationAgent = None
+    VideoGenerationAgent = None
+    VisualContentOrchestrator = None
 from .marketing_orchestrator import execute_campaign_workflow, create_marketing_orchestrator_agent
 
 # ADK CLI compatibility - expose root_agent

@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useMarketingContext } from '@/contexts/MarketingContext';
-import { Plus, FileText, Calendar, ArrowRight, Trash2, AlertTriangle } from 'lucide-react';
+import { Plus, FileText, Calendar, ArrowRight, Trash2, AlertTriangle, Settings } from 'lucide-react';
 import Footer from '@/components/Footer';
 
 const DashboardPage: React.FC = () => {
@@ -62,6 +62,9 @@ const DashboardPage: React.FC = () => {
               <Link to="/new-campaign" className="vvl-button-primary text-sm flex items-center gap-2">
                 <Plus size={16} />
                 New Campaign
+              </Link>
+              <Link to="/settings" className="vvl-button-secondary p-2" aria-label="Settings">
+                <Settings size={16} />
               </Link>
             </nav>
           </div>

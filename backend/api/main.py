@@ -36,6 +36,7 @@ from .routes.enhanced_campaigns import router as enhanced_campaigns_router
 
 from .routes.social_auth import router as social_auth_router
 from .routes.social_posts import router as social_posts_router
+from .routes.config import router as config_router
 
 from .routes.test_endpoints import router as test_router
 
@@ -50,6 +51,12 @@ logger = setup_logging()
 marketing_agent: SequentialAgent = None
 session_service = InMemorySessionService()
 artifact_service = InMemoryArtifactService()
+
+async def reload_marketing_agent() -> SequentialAgent:
+    """Reinitialize the marketing agent after configuration changes."""
+    global marketing_agent
+    marketing_agent = await create_marketing_orchestrator_agent()
+    return marketing_agent
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -155,6 +162,11 @@ app.include_router(
     social_posts_router,
     prefix="/api/v1/posts",
     tags=["Social Media Publishing"]
+)
+app.include_router(
+    config_router,
+    prefix="/api/v1",
+    tags=["Configuration"]
 )
 app.include_router(
     test_router,

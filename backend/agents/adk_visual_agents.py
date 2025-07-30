@@ -27,7 +27,11 @@ from google.adk.models import Gemini
 from google.adk.runners import InMemoryRunner
 
 # Import existing visual generation utilities
-from .visual_content_agent import CampaignImageCache, CampaignVideoCache
+try:
+    from .visual_content_agent import CampaignImageCache, CampaignVideoCache
+except Exception:  # pragma: no cover
+    CampaignImageCache = None
+    CampaignVideoCache = None
 from google import genai
 from google.genai import types
 

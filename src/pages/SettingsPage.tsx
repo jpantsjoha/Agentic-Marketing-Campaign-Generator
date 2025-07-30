@@ -22,6 +22,7 @@ import {
   BarChart3,
   DollarSign
 } from 'lucide-react';
+import { VideoVentureLaunchAPI } from '@/lib/api';
 
 interface UserSettings {
   googleApiKey: string;
@@ -150,6 +151,17 @@ const SettingsPage: React.FC = () => {
         return <Badge className="vvl-badge">Validating...</Badge>;
       default:
         return null;
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    try {
+      // Save API key via our API client
+      await VideoVentureLaunchAPI.setGeminiKey(settings.googleApiKey);
+      console.log('Settings saved:', settings);
+    } finally {
+      setIsSaving(false);
     }
   };
 
