@@ -1,0 +1,89 @@
+{
+  "timestamp": "2025-07-30T11:51:19.758955",
+  "summary": {
+    "total_tests": 11,
+    "passed": 1,
+    "partial": 2,
+    "failed": 8,
+    "success_rate": 0.18181818181818182
+  },
+  "detailed_results": [
+    {
+      "test": "Homepage Load",
+      "status": "FAIL",
+      "details": "Title: AiPostsGen - AI-Powered Marketing Campaign Generator, Page size: 2505 chars, Hero elements: 0, Nav elements: 0",
+      "timestamp": "2025-07-30T11:50:46.091161",
+      "screenshot": "screenshot_20250730_115045_homepage_load.png"
+    },
+    {
+      "test": "Settings Navigation",
+      "status": "FAIL",
+      "details": "Message: invalid selector: An invalid or illegal selector was specified\n  (Session info: chrome=138.0.7204.169); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidselectorexception\nStacktrace:\n0   chromedriver                        0x00000001012a0b38 cxxbridge1$str$ptr + 2722088\n1   chromedriver                        0x0000000101298aa8 cxxbridge1$str$ptr + 2689176\n2   chromedriver                        0x0000000100dea33c cxxbridge1$string$len + 90648\n3   chromedriver                        0x0000000100defff0 cxxbridge1$string$len + 114380\n4   chromedriver                        0x0000000100df2334 cxxbridge1$string$len + 123408\n5   chromedriver                        0x0000000100df23dc cxxbridge1$string$len + 123576\n6   chromedriver                        0x0000000100e31064 cxxbridge1$string$len + 380736\n7   chromedriver                        0x0000000100e72880 cxxbridge1$string$len + 649052\n8   chromedriver                        0x0000000100e25784 cxxbridge1$string$len + 333408\n9   chromedriver                        0x0000000101263eb4 cxxbridge1$str$ptr + 2473124\n10  chromedriver                        0x0000000101267120 cxxbridge1$str$ptr + 2486032\n11  chromedriver                        0x00000001012456b4 cxxbridge1$str$ptr + 2348196\n12  chromedriver                        0x00000001012679dc cxxbridge1$str$ptr + 2488268\n13  chromedriver                        0x0000000101236730 cxxbridge1$str$ptr + 2286880\n14  chromedriver                        0x00000001012875f8 cxxbridge1$str$ptr + 2618344\n15  chromedriver                        0x0000000101287784 cxxbridge1$str$ptr + 2618740\n16  chromedriver                        0x00000001012986e4 cxxbridge1$str$ptr + 2688212\n17  libsystem_pthread.dylib             0x0000000186352c0c _pthread_start + 136\n18  libsystem_pthread.dylib             0x000000018634db80 thread_start + 8\n",
+      "timestamp": "2025-07-30T11:50:47.225751",
+      "screenshot": "screenshot_20250730_115047_settings_nav_error.png"
+    },
+    {
+      "test": "Professional 3-Tab Interface",
+      "status": "PARTIAL",
+      "details": "Tabs found: [], Tab content: {'api_config': True, 'usage_quotas': False, 'model_selection': False}",
+      "timestamp": "2025-07-30T11:50:50.396953",
+      "screenshot": "screenshot_20250730_115050_settings_page_full.png"
+    },
+    {
+      "test": "API Key Input",
+      "status": "FAIL",
+      "details": "No API key input field found",
+      "timestamp": "2025-07-30T11:50:51.535607",
+      "screenshot": "screenshot_20250730_115051_no_api_input.png"
+    },
+    {
+      "test": "Test Connection Button",
+      "status": "FAIL",
+      "details": "No test connection button found",
+      "timestamp": "2025-07-30T11:50:52.685834",
+      "screenshot": "screenshot_20250730_115052_no_test_button.png"
+    },
+    {
+      "test": "Save Settings",
+      "status": "PARTIAL",
+      "details": "No explicit save button found",
+      "timestamp": "2025-07-30T11:50:53.816968",
+      "screenshot": "screenshot_20250730_115053_no_save_button.png"
+    },
+    {
+      "test": "New Campaign Navigation",
+      "status": "FAIL",
+      "details": "URL: http://localhost:8096/new-campaign, Form elements: 0",
+      "timestamp": "2025-07-30T11:50:56.963880",
+      "screenshot": "screenshot_20250730_115056_new_campaign_page.png"
+    },
+    {
+      "test": "Campaign Form Filling",
+      "status": "FAIL",
+      "details": "Filled 0/5 fields",
+      "timestamp": "2025-07-30T11:50:58.149661",
+      "screenshot": "screenshot_20250730_115058_form_filled.png"
+    },
+    {
+      "test": "Ideation Page Navigation",
+      "status": "FAIL",
+      "details": "URL: http://localhost:8096/ideation, Interactive elements: 0",
+      "timestamp": "2025-07-30T11:51:02.308487",
+      "screenshot": "screenshot_20250730_115102_ideation_page.png"
+    },
+    {
+      "test": "Image Thumbnails Display",
+      "status": "FAIL",
+      "details": "Loaded 0/0 images (0.0%)",
+      "timestamp": "2025-07-30T11:51:09.506808",
+      "screenshot": "screenshot_20250730_115109_image_display_check.png"
+    },
+    {
+      "test": "Text Visibility",
+      "status": "PASS",
+      "details": "Found 0 visibility issues out of 4 checks",
+      "timestamp": "2025-07-30T11:51:18.753800",
+      "screenshot": "screenshot_20250730_115118_text_visibility_check.png"
+    }
+  ]
+}

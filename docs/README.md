@@ -1,140 +1,172 @@
-# AI Marketing Campaign Post Generator - Documentation Index
+# Video Venture Launch - Documentation Index
 
 **FILENAME:** README.md  
 **DESCRIPTION/PURPOSE:** Master documentation index for the AI Marketing Campaign Post Generator platform  
 **Author:** JP + 2025-06-18  
-**Status:** Consolidated and Current
+**Last Updated:** 2025-01-30
+**Status:** Reorganized and Current
 
 ---
 
-## 📋 **Essential Documentation Overview**
+## 📁 Repository Structure (Reorganized)
 
-This documentation has been **consolidated and cleaned up** to remove redundancy and focus on the most current and valuable information. The platform is **90% ready for hackathon submission** with real AI integration throughout.
+This documentation has been **reorganized and standardized** to follow best practices with proper directory structure and consistent naming conventions.
 
-### **Current Project Status: MVP-Ready (85% Complete)**
-- ✅ **Real AI Integration**: Complete ADK workflow with Gemini 2.5 Flash
-- ✅ **Production Database**: Operational SQLite with comprehensive schema  
-- ✅ **Professional Frontend**: VVL design system with glassmorphism theme
-- ✅ **Comprehensive Testing**: 90%+ test coverage with real API validation
-- 🔄 **Video Generation**: Veo API integration pending (prompts working)
-- 🔄 **Cloud Deployment**: Google Cloud Run configuration needed
+### **Documentation Directories**
+- **`ADR/`** - Architecture Decision Records (27 decisions, properly numbered)
+- **`architecture/`** - System architecture diagrams and high-level design documents  
+- **`project-management/`** - Project roadmaps, TODOs, and development planning
+- **`reference/`** - Implementation guides, business logic, and technical references
+- **`reports/`** - Test reports, assessments, and evaluation documents
+- **`screenshots/`** - Visual documentation and UI validation screenshots
+- **`design/`** - Design system documentation and visual content guidelines
+- **`security/`** - Security assessments and compliance documentation
+- **`testing/`** - Testing strategies and quality assurance documentation
 
 ---
 
 ## 🎯 **Core Documentation (Essential Reading)**
 
 ### **1. Solution Intent & Architecture**
-- **[SOLUTION-INTENT.md](SOLUTION-INTENT.md)** (30KB) - **Master document** defining platform vision, user journey, and business logic
-- **[AGENTIC-HLD-UPDATED.md](AGENTIC-HLD-UPDATED.md)** (12KB) - **Current architecture** with real AI implementation details
-- **[SOLUTION-ARCHITECTURE-ASSESSMENT.md](SOLUTION-ARCHITECTURE-ASSESSMENT.md)** (24KB) - **Latest assessment** with corrected implementation analysis
+- **[High-Level Design](./architecture/high-level-design.md)** - Complete system architecture
+- **[Solution Architecture Assessment](./architecture/SOLUTION-ARCHITECTURE-ASSESSMENT.md)** - Current state analysis
+- **[Solution Intent](./reference/SOLUTION-INTENT.md)** - Business goals and technical requirements
 
 ### **2. Business Logic & User Experience**
-- **[USER-DATA-JOURNEY.md](USER-DATA-JOURNEY.md)** (19KB) - Complete user workflow and data flow mapping
-- **[MarketingCampaignLogic.md](MarketingCampaignLogic.md)** (7.7KB) - Core marketing automation business logic
-- **[ImagenBusinessLogic.md](ImagenBusinessLogic.md)** (3.6KB) - Visual content generation workflow
+- **[User Data Journey](./reference/USER-DATA-JOURNEY.md)** - Complete user workflow and data flow mapping
+- **[Marketing Campaign Logic](./reference/MarketingCampaignLogic.md)** - Core marketing automation business logic
+- **[Imagen Business Logic](./reference/ImagenBusinessLogic.md)** - Visual content generation workflow
 
 ### **3. Implementation Knowledge**
-- **[LessonsLearned-Log.md](LessonsLearned-Log.md)** (71KB) - **Critical knowledge base** with bug resolutions and architectural insights
-- **[ADK-AGENT-ROLES-DEPENDENCIES.md](ADK-AGENT-ROLES-DEPENDENCIES.md)** (18KB) - Detailed agent hierarchy and dependencies
-- **[RELEASE-NOTES.md](RELEASE-NOTES.md)** (2.0KB) - Version history and major milestones
+- **[Lessons Learned Log](./project-management/lessons-learned.md)** - Critical knowledge base with bug resolutions and architectural insights
+- **[ADK Agent Implementation](./reference/ADK-AGENT-ROLES-DEPENDENCIES.md)** - Detailed agent hierarchy and dependencies
+- **[Social Media OAuth Integration](./reference/SOCIAL-MEDIA-OAUTH-IMPLEMENTATION.md)** - Authentication strategy
 
-### **4. Environment & Configuration**
-- **[ENVIRONMENT-CONFIGURATION-CRITICAL.md](ENVIRONMENT-CONFIGURATION-CRITICAL.md)** (5.5KB) - **Essential setup** for API keys and environment variables
-- **[ABOUT.md](ABOUT.md)** (7.1KB) - Project overview and technical summary
-
----
-
-## 🏗️ **Architecture Decision Records (ADR)**
-
-### **Technology & Framework Decisions**
-- **[ADR-001-technology-stack.md](ADR/ADR-001-technology-stack.md)** - Core technology choices (React, FastAPI, ADK)
-- **[ADR-003-backend-adk-implementation.md](ADR/ADR-003-backend-adk-implementation.md)** - Google ADK framework integration
-- **[ADR-003-VVL-Design-System-Framework.md](ADR/ADR-003-VVL-Design-System-Framework.md)** - Frontend design system
-
-### **Implementation & Enhancement Decisions**
-- **[ADR-002-enhanced-campaign-creation.md](ADR/ADR-002-enhanced-campaign-creation.md)** - Campaign creation workflow
-- **[ADR-004-environment-variable-standardization.md](ADR/ADR-004-environment-variable-standardization.md)** - Environment configuration
-- **[ADR-004-local-database-design.md](ADR/ADR-004-local-database-design.md)** - Database architecture and design
-- **[ADR-005-Social-Media-Post-Generation-Enhancement.md](ADR/ADR-005-Social-Media-Post-Generation-Enhancement.md)** - Content generation improvements
-- **[ADR-009-real-ai-analysis-implementation.md](ADR/ADR-009-real-ai-analysis-implementation.md)** - Real AI integration implementation
+### **4. Testing & Quality Assurance**
+- **[Testing Improvements](./testing/TESTING-IMPROVEMENTS.md)** - QA strategy and test implementation
+- **[Comprehensive Integration Test Report](./reports/COMPREHENSIVE_INTEGRATION_TEST_REPORT.md)** - Latest test results
+- **[Solution Maturity Assessment](./project-management/SOLUTION-MATURITY-ASSESSMENT-UPDATED.md)** - Release readiness
 
 ---
 
-## 📊 **Project Management (Current Status)**
+## 🏗️ **Architecture Decision Records (ADRs)**
+
+The `ADR/` directory contains **27 architectural decisions** with standardized kebab-case naming:
+
+### **Core Technology Decisions**
+- **[ADR-001](./ADR/ADR-001-technology-stack.md)** - Technology Stack Selection
+- **[ADR-002](./ADR/ADR-002-enhanced-campaign-creation.md)** - Enhanced Campaign Creation Workflow
+- **[ADR-003](./ADR/ADR-003-backend-adk-implementation.md)** - Backend ADK Implementation Strategy
+- **[ADR-003B](./ADR/ADR-003-vvl-design-system-framework.md)** - VVL Design System Framework
+
+### **API & Data Architecture**
+- **[ADR-017](./ADR/ADR-017-frontend-backend-api-data-transformation-strategy.md)** - Frontend-Backend API Data Transformation (Superseded)
+- **[ADR-018](./ADR/ADR-018-backend-camelcase-api-contract.md)** - Backend CamelCase API Contract (Current)
+- **[ADR-025](./ADR/ADR-025-api-structure-definition.md)** - API Structure Definition
+
+### **Visual Content & AI Agents**
+- **[ADR-019](./ADR/ADR-019-agentic-visual-content-generation.md)** - Agentic Visual Content Generation
+- **[ADR-021](./ADR/ADR-021-async-visual-content-generation-architecture.md)** - Async Visual Content Generation Architecture
+- **[ADR-027](./ADR/ADR-027-visual-content-context-fidelity.md)** - Visual Content Context Fidelity
+
+See **[ADR Index](./ADR/README.md)** for complete list with status tracking and architectural evolution.
+
+---
+
+## 📊 **Project Management**
 
 ### **Active Planning Documents**
-- **[TODO.md](project-management/TODO.md)** (7.1KB) - **Current tasks** and remaining work for hackathon submission
-- **[EPIC.md](project-management/EPIC.md)** (7.1KB) - **High-level features** and completion status
-- **[MVP-ROADMAP.md](project-management/MVP-ROADMAP.md)** (12KB) - **Submission roadmap** with deployment strategy
+- **[MVP Roadmap](./project-management/MVP-ROADMAP.md)** - Development milestones
+- **[Outstanding TODOs](./project-management/TODO-MVP-OUTSTANDING.md)** - Current development priorities
+- **[Social Media Publishing TODOs](./project-management/TODO-SOCIAL-MEDIA-PUBLISHING.md)** - Publishing workflow tasks
+- **[EPIC Documentation](./project-management/EPIC.md)** - Feature development stories
+- **[Technical Roadmap](./project-management/updated-technical-roadmap.md)** - Updated implementation plan
 
 ### **Implementation Summaries**
-- **[API-TESTING-SUMMARY.md](project-management/API-TESTING-SUMMARY.md)** (6.0KB) - Comprehensive API testing framework
-- **[COMPREHENSIVE-TEST-IMPLEMENTATION-SUMMARY.md](project-management/COMPREHENSIVE-TEST-IMPLEMENTATION-SUMMARY.md)** (9.8KB) - Database and testing framework
-- **[DATABASE-DESIGN-SUMMARY.md](project-management/DATABASE-DESIGN-SUMMARY.md)** (8.6KB) - Database architecture implementation
-- **[SOLUTION-MATURITY-ASSESSMENT-UPDATED.md](project-management/SOLUTION-MATURITY-ASSESSMENT-UPDATED.md)** (12KB) - **Latest maturity analysis**
+- **[API Testing Summary](./project-management/API-TESTING-SUMMARY.md)** - Comprehensive API testing framework
+- **[Database Design Summary](./project-management/DATABASE-DESIGN-SUMMARY.md)** - Database architecture implementation
+- **[Comprehensive Test Implementation](./project-management/COMPREHENSIVE-TEST-IMPLEMENTATION-SUMMARY.md)** - Testing framework overview
 
 ---
 
-## 🚀 **Quick Start Navigation**
+## 🔗 **Quick Navigation by Role**
+
+### **For Developers**
+- [ADK API Reference Architecture](./architecture/ADK-API-REFERENCE-ARCHITECTURE.md)
+- [Port Configuration](./architecture/PORT-CONFIGURATION.md)
+- [Logging Implementation](./reference/LOGGING-IMPLEMENTATION.md)
+- [Database Design Summary](./project-management/DATABASE-DESIGN-SUMMARY.md)
+
+### **For Product Managers**
+- [Solution Intent](./reference/SOLUTION-INTENT.md)
+- [Project Story](./reference/ProjectStory.md)
+- [Visual Cues Documentation](./project-management/Visual-Cues.md)
+- [Solution Assessment Release 1.1](./reports/SOLUTION-ASSESSMENT-RELEASE-1.1.md)
+
+### **For DevOps/Infrastructure**
+- [Security Assessment](./security/SECURITY_ASSESSMENT.md)
+- [Vercel Deployment Guide](./reference/vercel.md)
+- [Port Configuration](./architecture/PORT-CONFIGURATION.md)
+
+### **For Design & UX**
+- [Visual Content Optimization](./design/VISUAL-CONTENT-OPTIMIZATION.md)
+- [Visual Content Context Fixes](./design/VISUAL_CONTENT_CONTEXT_FIXES.md)
+- [Design Documentation Report](./reports/DESIGN_DOCUMENTATION_REPORT.md)
+- [Design Screenshots](./design/design_documentation_screenshots/)
+
+### **For QA & Testing**
+- [Testing Improvements](./testing/TESTING-IMPROVEMENTS.md)
+- [Comprehensive E2E Test Report](./reports/COMPREHENSIVE-E2E-TEST-REPORT.md)
+- [Integration Test Report](./reports/COMPREHENSIVE_INTEGRATION_TEST_REPORT.md)
+
+---
+
+## 🚀 **Getting Started**
 
 ### **For New Developers**
-1. Start with **[SOLUTION-INTENT.md](SOLUTION-INTENT.md)** - Understand the platform vision
-2. Review **[AGENTIC-HLD-UPDATED.md](AGENTIC-HLD-UPDATED.md)** - Current architecture
-3. Check **[ENVIRONMENT-CONFIGURATION-CRITICAL.md](ENVIRONMENT-CONFIGURATION-CRITICAL.md)** - Setup requirements
-4. Read **[TODO.md](project-management/TODO.md)** - Current priorities
+1. Start with **[Solution Intent](./reference/SOLUTION-INTENT.md)** - Understand the platform vision
+2. Review **[High-Level Design](./architecture/high-level-design.md)** - Current architecture
+3. Check **[ADK Agent Implementation](./reference/ADK-AGENT-ROLES-DEPENDENCIES.md)** - Agent patterns
+4. Read **[Outstanding TODOs](./project-management/TODO-MVP-OUTSTANDING.md)** - Current priorities
 
 ### **For Architecture Review**
-1. **[SOLUTION-ARCHITECTURE-ASSESSMENT.md](SOLUTION-ARCHITECTURE-ASSESSMENT.md)** - Latest comprehensive assessment
-2. **[ADK-AGENT-ROLES-DEPENDENCIES.md](ADK-AGENT-ROLES-DEPENDENCIES.md)** - Agent implementation details
-3. **[LessonsLearned-Log.md](LessonsLearned-Log.md)** - Implementation insights and bug resolutions
+1. **[Solution Architecture Assessment](./architecture/SOLUTION-ARCHITECTURE-ASSESSMENT.md)** - Latest comprehensive assessment
+2. **[ADR Index](./ADR/README.md)** - All architectural decisions with evolution tracking
+3. **[Lessons Learned](./project-management/lessons-learned.md)** - Implementation insights and bug resolutions
 
-### **For Hackathon Judges**
-1. **[ABOUT.md](ABOUT.md)** - Project overview and innovation
-2. **[SOLUTION-INTENT.md](SOLUTION-INTENT.md)** - Business value and technical approach
-3. **[AGENTIC-HLD-UPDATED.md](AGENTIC-HLD-UPDATED.md)** - ADK framework implementation
-4. **[SOLUTION-ARCHITECTURE-ASSESSMENT.md](SOLUTION-ARCHITECTURE-ASSESSMENT.md)** - Technical maturity and readiness
-
----
-
-## 🎯 **Hackathon Submission Readiness: 90%**
-
-### **✅ COMPLETED (Ready for Submission)**
-- **Technical Implementation**: Real ADK framework with comprehensive AI workflow
-- **Innovation Factor**: Multi-agent sequential pattern with business intelligence extraction  
-- **Production Quality**: Professional-grade code with 90%+ test coverage
-- **Documentation**: Comprehensive technical documentation and architecture
-
-### **🔄 REMAINING (Final Polish)**
-- **Cloud Deployment**: Deploy to Google Cloud Run for live demonstration
-- **Demo Video**: 3-minute technical showcase
-- **Video Generation**: Complete Veo API integration (optional enhancement)
-
-### **🏆 COMPETITIVE ADVANTAGES**
-- **Real AI Integration**: Not mock implementation - actual Google ADK agents
-- **Production Architecture**: Scalable, cloud-ready design with comprehensive testing
-- **Business Value**: Solves real marketing workflow automation problems
-- **Technical Innovation**: Advanced multi-agent pattern with sequential coordination
+### **For Business Stakeholders**
+1. **[Solution Intent](./reference/SOLUTION-INTENT.md)** - Business value and technical approach
+2. **[Solution Maturity Assessment](./project-management/SOLUTION-MATURITY-ASSESSMENT-UPDATED.md)** - Current readiness status
+3. **[Release Notes](./reference/RELEASE-NOTES-v1.0.0-beta.1.md)** - Latest release information
 
 ---
 
-## 📈 **Documentation Maintenance**
+## 📈 **Repository Reorganization Summary**
 
-### **Recently Removed (Redundant/Outdated)**
-- Multiple architecture documents (consolidated into SOLUTION-ARCHITECTURE-ASSESSMENT.md)
-- Outdated implementation status files (superseded by current assessment)
-- Archived TODO items and remediation plans (tasks completed)
-- Multiple environment configuration files (consolidated into CRITICAL version)
-- Redundant project summaries and roadmaps
+### **✅ COMPLETED**
+- **Directory Structure**: Organized into logical subdirectories (ADR/, architecture/, project-management/, etc.)
+- **Naming Standardization**: All ADRs use kebab-case naming convention
+- **Conflict Resolution**: Fixed duplicate ADR numbering (ADR-003, ADR-004, ADR-010, ADR-020)
+- **Cross-Reference Updates**: Updated all internal documentation links
+- **File Organization**: Moved scattered files to appropriate directories
 
-### **Kept (Essential/Current)**
-- Latest solution architecture assessment and implementation status
-- Current project management documents (TODO, EPIC, MVP-ROADMAP)
-- All Architecture Decision Records (ADR) for historical context
-- Lessons learned log for implementation knowledge
-- Core business logic and user journey documentation
+### **📂 File Movements**
+- **Reports**: Test and evaluation reports → `reports/`
+- **Screenshots**: All UI validation images → `screenshots/`
+- **Design**: Visual content documentation → `design/`
+- **Security**: Security assessments → `security/`
+- **Reference**: Implementation guides and business logic → `reference/`
+- **ADRs**: All consolidated in `ADR/` with consistent numbering
+
+### **🎯 BENEFITS**
+- **Improved Navigation**: Logical directory structure for better findability
+- **Consistent Naming**: Standardized kebab-case for all technical documents
+- **Reduced Redundancy**: Eliminated duplicate and conflicting files
+- **Better Maintenance**: Clear organization for ongoing documentation updates
+- **Professional Standards**: Following industry best practices for technical documentation
 
 ---
 
-**Last Updated**: 2025-06-18  
-**Documentation Status**: Consolidated and Current  
-**Project Status**: 90% Ready for Hackathon Submission 
+**Documentation Standard:** All docs follow ADK v1.8+ patterns with comprehensive cross-referencing and organized repository structure.
+**Repository Status:** Reorganized for best practices and maintainability
+**Next Steps:** Validate all cross-references and update any remaining legacy links

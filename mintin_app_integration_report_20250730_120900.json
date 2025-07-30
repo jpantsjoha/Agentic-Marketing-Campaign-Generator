@@ -1,0 +1,55 @@
+{
+  "campaign": "Mintin.app Crypto Token Minting Service",
+  "campaign_data": {
+    "business_name": "Mintin.app",
+    "business_type": "Cryptocurrency & Blockchain",
+    "business_description": "Revolutionary crypto token minting platform that democratizes token creation for everyone",
+    "target_audience": "Crypto enthusiasts, DeFi users, entrepreneurs, and blockchain developers",
+    "value_proposition": "Create your own crypto tokens in minutes without coding knowledge - secure, fast, and affordable token minting service"
+  },
+  "timestamp": "2025-07-30T12:09:00.260495",
+  "summary": {
+    "total_tests": 5,
+    "passed": 5,
+    "partial": 0,
+    "failed": 0,
+    "success_rate": 1.0
+  },
+  "detailed_results": [
+    {
+      "test": "Homepage Accessibility",
+      "status": "PASS",
+      "details": "Title: AiPostsGen - AI-Powered Marketing Campaign Generator, Body length: 3683, Visible elements: 418, Interactive: 28",
+      "timestamp": "2025-07-30T12:08:13.674637",
+      "screenshot": "mintin_app_20250730_120813_homepage_load.png"
+    },
+    {
+      "test": "Settings Configuration",
+      "status": "PASS",
+      "details": "URL: http://localhost:8096/settings, API content: True, Tab structure: True, Forms: True, API configured: True",
+      "timestamp": "2025-07-30T12:08:24.211999",
+      "screenshot": "mintin_app_20250730_120824_settings_configured.png"
+    },
+    {
+      "test": "Mintin.app Campaign Creation",
+      "status": "PASS",
+      "details": "URL: http://localhost:8096/new-campaign, Form indicators: {'business_form': True, 'campaign_form': True, 'description_field': True, 'target_audience': True}, Fields filled: 5, Submit attempted: False",
+      "timestamp": "2025-07-30T12:08:34.495019",
+      "screenshot": "mintin_app_20250730_120834_campaign_filled.png"
+    },
+    {
+      "test": "Ideation Process",
+      "status": "PASS",
+      "details": "URL: http://localhost:8096/ideation, Indicators: {'content_generation': True, 'crypto_ready': False, 'marketing_focus': True, 'ai_powered': True}, Buttons: 1, Images: 0, Generation attempted: True",
+      "timestamp": "2025-07-30T12:08:46.914014",
+      "screenshot": "mintin_app_20250730_120841_ideation_page.png"
+    },
+    {
+      "test": "Crypto Content Quality",
+      "status": "PASS",
+      "details": "Compatibility score: 6/12 (50.0%)",
+      "timestamp": "2025-07-30T12:08:58.256092",
+      "screenshot": "mintin_app_20250730_120858_crypto_compliance.png"
+    }
+  ]
+}

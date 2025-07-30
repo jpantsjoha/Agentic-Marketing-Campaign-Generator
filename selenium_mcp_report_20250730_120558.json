@@ -1,0 +1,49 @@
+{
+  "homepage": {
+    "success": false,
+    "title": "AiPostsGen - AI-Powered Marketing Campaign Generator",
+    "content_length": 0,
+    "nav_elements": 0,
+    "interactive_elements": 0,
+    "screenshot": "selenium_mcp_20250730_120534_homepage.png"
+  },
+  "settings": {
+    "success": true,
+    "url": "http://localhost:8096/settings",
+    "indicators": {
+      "api_key": true,
+      "settings": false,
+      "configuration": false,
+      "tabs": false
+    },
+    "form_elements": 0,
+    "buttons": 0,
+    "tabs": 0,
+    "screenshot": "selenium_mcp_20250730_120547_settings_page.png"
+  },
+  "campaign": {
+    "success": true,
+    "url": "http://localhost:8096/new-campaign",
+    "indicators": {
+      "form": true,
+      "business": true,
+      "campaign": true,
+      "create": true
+    },
+    "form_elements": 0,
+    "screenshot": "selenium_mcp_20250730_120552_new_campaign.png"
+  },
+  "ideation": {
+    "success": true,
+    "url": "http://localhost:8096/ideation",
+    "indicators": {
+      "ideation": false,
+      "content": true,
+      "generate": false,
+      "ideas": false
+    },
+    "buttons": 0,
+    "images": 0,
+    "screenshot": "selenium_mcp_20250730_120557_ideation.png"
+  }
+}

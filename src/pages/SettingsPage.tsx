@@ -119,9 +119,8 @@ const SettingsPage: React.FC = () => {
   const handleSaveSettings = async () => {
     setIsSaving(true);
     try {
-      // Simulate save operation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // In real implementation, save to backend
+      // Save API key via our API client
+      await VideoVentureLaunchAPI.setGeminiKey(settings.googleApiKey);
       console.log('Settings saved:', settings);
     } finally {
       setIsSaving(false);
@@ -151,17 +150,6 @@ const SettingsPage: React.FC = () => {
         return <Badge className="vvl-badge">Validating...</Badge>;
       default:
         return null;
-    }
-  };
-
-  const handleSaveSettings = async () => {
-    setIsSaving(true);
-    try {
-      // Save API key via our API client
-      await VideoVentureLaunchAPI.setGeminiKey(settings.googleApiKey);
-      console.log('Settings saved:', settings);
-    } finally {
-      setIsSaving(false);
     }
   };
 
