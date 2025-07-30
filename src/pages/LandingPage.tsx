@@ -28,7 +28,8 @@ import {
   ShoppingBag,
   Heart,
   Megaphone,
-  Building
+  Building,
+  Settings
 } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
@@ -138,11 +139,18 @@ const LandingPage: React.FC = () => {
               >
                 View Campaigns
               </button>
-              <button 
+              <button
                 onClick={() => navigate('/new-campaign')}
                 className="vvl-button-primary text-sm"
               >
                 Create Your Campaign
+              </button>
+              <button
+                onClick={() => navigate('/settings')}
+                className="vvl-button-secondary p-2"
+                aria-label="Settings"
+              >
+                <Settings className="w-4 h-4" />
               </button>
             </nav>
           </div>

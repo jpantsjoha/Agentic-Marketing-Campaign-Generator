@@ -70,6 +70,11 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
       debug('🔐 Auth token added to request', undefined, 'API');
     }
+
+    const geminiKey = localStorage.getItem('gemini_api_key');
+    if (geminiKey) {
+      config.headers['X-Gemini-Key'] = JSON.parse(geminiKey);
+    }
     
     return config;
   },
@@ -578,6 +583,10 @@ export class VideoVentureLaunchAPI {
       console.error('Analyze files error:', err);
       throw this.handleApiError(err);
     }
+  }
+
+  static async setGeminiKey(key: string): Promise<void> {
+    await apiClient.post('/api/v1/config/gemini-key', { gemini_api_key: key });
   }
 
   // Error handling helper

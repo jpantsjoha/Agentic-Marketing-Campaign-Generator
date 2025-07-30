@@ -46,6 +46,11 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     logger.warning("GEMINI_API_KEY not configured - using mock responses")
 
+def update_gemini_api_key(new_key: str) -> None:
+    """Update the Gemini API key at runtime."""
+    global GEMINI_API_KEY
+    GEMINI_API_KEY = new_key
+
 # --- Business Analysis Agents ---
 
 async def create_url_analysis_agent() -> LlmAgent:
