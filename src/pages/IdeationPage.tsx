@@ -1554,32 +1554,28 @@ const IdeationPage: React.FC = () => {
                   {column.isGenerating && (
                     <div className="mt-4 p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-sm text-blue-400">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                          <span>Analyzing business context with Gemini AI...</span>
+                        <div className="flex items-center gap-3 text-sm text-blue-600">
+                          <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                          <span>Analyzing business context…</span>
                         </div>
-                        <div className="flex items-center gap-3 text-sm text-green-400">
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse animation-delay-300"></div>
-                          <span>Generating creative content variations...</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-sm text-purple-400">
-                          <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse animation-delay-600"></div>
-                          <span>Optimizing for platform engagement...</span>
+                        <div className="flex items-center gap-3 text-sm text-purple-600">
+                          <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse animation-delay-300"></div>
+                          <span>Generating creative variations…</span>
                         </div>
                         {column.id !== 'text-only' && (
-                          <div className="flex items-center gap-3 text-sm text-orange-400">
-                            <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse animation-delay-900"></div>
-                            <span>Generating {column.id === 'text-image' ? 'images' : 'videos'} with Imagen/Veo AI...</span>
+                          <div className="flex items-center gap-3 text-sm text-slate-600">
+                            <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse animation-delay-600"></div>
+                            <span>Preparing visuals…</span>
                           </div>
                         )}
                       </div>
-                      
+                        
                       {/* Progress Bar */}
                       <div className="mt-4">
-                        <div className="w-full bg-gray-700 rounded-full h-1">
-                          <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-1 rounded-full animate-pulse w-3/4 transition-all duration-1000"></div>
+                        <div className="w-full bg-slate-200 rounded-full h-1">
+                          <div className="h-1 rounded-full animate-pulse w-3/4 transition-all duration-1000" style={{ backgroundImage: 'linear-gradient(90deg, #f59e0b, #a855f7)' }}></div>
                         </div>
-                        <p className="text-xs text-gray-400 mt-2 text-center">Expected completion: ~5-10 seconds</p>
+                        <p className="text-xs text-slate-500 mt-2 text-center">~5–10 seconds</p>
                       </div>
                     </div>
                   )}
@@ -1599,83 +1595,32 @@ const IdeationPage: React.FC = () => {
                           {(post.content.imageUrl || post.content.videoUrl) && (
                             <div className="mb-4">
                               {post.content.imageUrl && (
-                                <div className="relative rounded-lg overflow-hidden bg-gray-800">
+                                <div className="relative rounded-lg overflow-hidden bg-slate-100">
                                   <img 
                                     src={post.content.imageUrl} 
                                     alt="Generated marketing image"
                                     className="w-full h-48 object-cover"
-                                    onLoad={(e) => {
-                                      console.log(`✅ IMAGE_LOADED: Post ${post.id} image loaded successfully`);
-                                      console.log(`✅ Image dimensions: ${e.currentTarget.naturalWidth}x${e.currentTarget.naturalHeight}`);
-                                      console.log(`✅ Image URL: ${post.content.imageUrl}`);
-                                    }}
-                                    onError={(e) => {
-                                      console.error(`❌ IMAGE_ERROR: Post ${post.id} image failed to load:`, e);
-                                      console.log(`🔍 Full Image URL: ${post.content.imageUrl}`);
-                                      console.log(`🔍 Image URL length: ${post.content.imageUrl?.length}`);
-                                      console.log(`🔍 Error details:`, e);
-                                      
-                                      // Test direct backend URL access
-                                      fetch(post.content.imageUrl)
-                                        .then(response => {
-                                          console.log(`🔍 Direct fetch response:`, response.status, response.statusText);
-                                          if (!response.ok) {
-                                            console.error(`🔍 Backend serving issue: ${response.status} ${response.statusText}`);
-                                          }
-                                        })
-                                        .catch(fetchError => {
-                                          console.error(`🔍 Network error:`, fetchError);
-                                        });
-                                      
-                                      // Fallback to placeholder if image fails to load
-                                      e.currentTarget.src = 'https://picsum.photos/400/240?blur=2';
-                                    }}
+                                    onError={(e) => { e.currentTarget.src = 'https://picsum.photos/400/240?blur=2'; }}
                                   />
-                                  {/* Debug overlay */}
-                                  <div className="absolute top-1 right-1 bg-black/50 text-white text-xs px-1 rounded">
-                                    {post.content.imageUrl ? 'Image Ready' : 'No Image'}
-                                  </div>
                                 </div>
                               )}
                               
                               {post.content.videoUrl && (
-                                <div className="relative rounded-lg overflow-hidden bg-gray-800">
+                                <div className="relative rounded-lg overflow-hidden bg-slate-100">
                                   <video 
                                     src={post.content.videoUrl}
                                     className="w-full h-48 object-cover"
                                     controls
                                     poster="https://picsum.photos/400/240?blur=2"
-                                    onLoadStart={() => {
-                                      console.log(`🎬 VIDEO_LOAD_START: Post ${post.id} video loading started`);
-                                    }}
-                                    onLoadedData={() => {
-                                      console.log(`✅ VIDEO_LOADED: Post ${post.id} video loaded successfully`);
-                                      console.log(`🔍 Video URL: ${post.content.videoUrl?.substring(0, 100)}...`);
-                                    }}
                                     onError={(e) => {
-                                      console.error(`❌ VIDEO_ERROR: Post ${post.id} video failed to load:`, e);
-                                      console.log(`🔍 Video URL: ${post.content.videoUrl}`);
-                                      console.log(`🔍 Video URL length: ${post.content.videoUrl?.length}`);
-                                      
-                                      // Show error state
                                       const videoElement = e.currentTarget;
                                       const container = videoElement.parentElement;
                                       if (container) {
-                                        container.innerHTML = `
-                                          <div class="flex flex-col items-center justify-center h-48 text-center p-4">
-                                            <div class="text-4xl mb-2">🎬</div>
-                                            <p class="text-sm text-gray-400 mb-2">Video Preview Not Available</p>
-                                            <p class="text-xs text-gray-500">Generated video ready for download</p>
-                                            <a href="${post.content.videoUrl}" target="_blank" 
-                                               class="mt-2 px-3 py-1 bg-blue-500/20 text-blue-400 rounded text-xs hover:bg-blue-500/30">
-                                              Open Video
-                                            </a>
-                                          </div>
-                                        `;
+                                        container.innerHTML = '<div class="flex flex-col items-center justify-center h-48 text-center p-4 text-slate-500 text-sm">Video preview not available</div>';
                                       }
                                     }}
                                     onCanPlay={() => {
-                                      console.log(`▶️ VIDEO_CAN_PLAY: Post ${post.id} video ready to play`);
+                                      /* ready */
                                     }}
                                     preload="metadata"
                                     muted
@@ -1686,35 +1631,6 @@ const IdeationPage: React.FC = () => {
                                       objectFit: 'cover'
                                     }}
                                   />
-                                  {/* Debug overlay for videos */}
-                                  <div className="absolute top-1 right-1 bg-black/50 text-white text-xs px-1 rounded">
-                                    {post.content.videoUrl ? 
-                                      (post.content.videoUrl.includes('mock_') ? 'Mock' : 
-                                       post.content.videoUrl.includes('localhost') ? 'Local' : 'External') 
-                                      : 'No Video'}
-                                  </div>
-                                  {/* Play button overlay */}
-                                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer"
-                                       onClick={(e) => {
-                                         const video = e.currentTarget.previousElementSibling as HTMLVideoElement;
-                                         if (video) {
-                                           if (video.paused) {
-                                             video.play().catch(err => {
-                                               console.log('Video autoplay prevented:', err);
-                                               // Show click to play message
-                                               toast.info('Click the video controls to play');
-                                             });
-                                           } else {
-                                             video.pause();
-                                           }
-                                         }
-                                       }}>
-                                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 hover:bg-white/30 transition-colors">
-                                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                                      </svg>
-                                    </div>
-                                  </div>
                                 </div>
                               )}
                             </div>
