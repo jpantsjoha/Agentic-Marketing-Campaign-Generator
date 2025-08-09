@@ -32,7 +32,7 @@
 
 /* Video loading states */
 .video-loading-overlay {
-  background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+  background: linear-gradient(45deg, rgba(249, 115, 22, 0.08), rgba(168, 85, 247, 0.08));
   backdrop-filter: blur(8px);
 }
 
@@ -49,29 +49,43 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.04), transparent);
   animation: shimmer 2s infinite;
+}
+
+/* Orange→Purple state glow for in-progress actions */
+@keyframes stateGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.25), 0 0 0 0 rgba(168, 85, 247, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.14), 0 0 0 12px rgba(168, 85, 247, 0.10);
+  }
+}
+
+.state-in-progress {
+  animation: stateGlow 2s ease-in-out infinite;
 }
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 280 15% 5%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 280 15% 5%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 280 15% 5%;
+    --popover-foreground: 222 47% 11%;
 
     --primary: 270 60% 54%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 174 100% 29%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 222 47% 20%;
 
-    --muted: 270 10% 96%;
-    --muted-foreground: 270 10% 25%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 215 16% 47%;
 
     --accent: 270 10% 96%;
     --accent-foreground: 270 60% 54%;
@@ -79,40 +93,40 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 10% 90%;
-    --input: 270 10% 90%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
     --ring: 270 60% 54%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 280 15% 10%;
+    --background: 222 15% 12%;
     --foreground: 0 0% 95%;
 
-    --card: 280 15% 15%;
+    --card: 222 16% 16%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 280 15% 15%;
+    --popover: 222 16% 16%;
     --popover-foreground: 0 0% 95%;
 
     --primary: 270 60% 70%;
-    --primary-foreground: 280 15% 10%;
+    --primary-foreground: 222 15% 12%;
 
-    --secondary: 174 70% 45%;
-    --secondary-foreground: 280 15% 10%;
+    --secondary: 222 16% 18%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 280 15% 20%;
-    --muted-foreground: 270 10% 70%;
+    --muted: 222 16% 18%;
+    --muted-foreground: 215 20% 70%;
 
-    --accent: 280 15% 20%;
+    --accent: 222 16% 18%;
     --accent-foreground: 0 0% 95%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 95%;
 
-    --border: 280 15% 25%;
-    --input: 280 15% 25%;
+    --border: 222 16% 24%;
+    --input: 222 16% 24%;
     --ring: 270 60% 70%;
   }
 }
@@ -124,224 +138,137 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Roboto', sans-serif;
-    /* Apply consistent blue gradient background across all pages */
-    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+    font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    background: #ffffff;
     min-height: 100vh;
   }
 
-  /* Material Design Paper Effect */
-  .material-card {
-    @apply rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-card;
-  }
-
-  /* Material Design Buttons */
-  .material-button {
-    @apply rounded-md px-4 py-2 transition-all duration-200 font-medium;
-  }
-
-  .material-button-primary {
-    @apply bg-material-primary text-white hover:bg-material-primary-dark;
-  }
-
-  .material-button-secondary {
-    @apply bg-material-secondary text-white hover:bg-material-secondary-dark;
-  }
-
-  /* Material Design Floating Action Button */
-  .material-fab {
-    @apply rounded-full h-14 w-14 flex items-center justify-center shadow-lg 
-           hover:shadow-xl transition-shadow duration-200;
-  }
-
-  /* Material Design Typography */
-  .material-heading {
-    @apply font-medium;
-  }
-
-  .material-body {
-    @apply font-normal;
-  }
-
-  /* Material Design Elevation (shadows) */
-  .elevation-1 {
-    @apply shadow-sm;
-  }
-  
-  .elevation-2 {
-    @apply shadow;
-  }
-  
-  .elevation-3 {
-    @apply shadow-md;
-  }
-  
-  .elevation-4 {
-    @apply shadow-lg;
-  }
-
-  /* Material Design ripple effect container */
-  .ripple-container {
-    @apply relative overflow-hidden;
-  }
-
-  /* AI Marketing Campaign Post Generator Blue Theme */
+  /* Surfaces */
   .vvl-gradient-bg {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+    background: #ffffff;
   }
 
+  /* Card */
   .vvl-card {
-    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg shadow-lg;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    @apply bg-white border border-slate-200 rounded-lg shadow-sm;
   }
 
   .vvl-card-hover {
-    @apply transition-all duration-300 hover:bg-white/15 hover:shadow-xl;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    @apply transition-shadow duration-200 hover:shadow-md;
   }
 
-  .vvl-card-hover:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  }
-
+  /* Buttons */
   .vvl-button-primary {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    @apply text-white font-medium px-6 py-3 rounded-lg transition-all duration-200;
+    background-image: linear-gradient(90deg, #f97316, #a855f7);
+    box-shadow: 0 4px 14px rgba(168, 85, 247, 0.25);
   }
 
   .vvl-button-secondary {
-    @apply bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 font-medium px-6 py-3 rounded-lg transition-all duration-200;
+    @apply bg-white text-slate-700 border border-slate-300 font-medium px-6 py-3 rounded-lg transition-all duration-200 hover:bg-slate-50;
   }
 
+  /* Inputs */
   .vvl-input {
-    @apply bg-white/10 backdrop-blur-sm border border-white/30 text-white placeholder-gray-300 rounded-lg px-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200;
+    @apply bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:border-violet-400 focus:ring-2 focus:ring-violet-300/40 transition-all duration-200;
   }
 
-  /* Ensure input text is always visible and dark on light backgrounds */
-  .vvl-input input, .vvl-input {
-    color: white !important;
+  /* Ensure input text is visible on light background */
+  .vvl-input input,
+  .vvl-input {
+    color: #0f172a !important;
   }
 
-  /* For select dropdowns, ensure options are visible */
   .vvl-input select {
-    color: white !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #0f172a !important;
+    background-color: #ffffff !important;
   }
 
   .vvl-input option {
-    @apply bg-slate-800 text-white;
+    @apply bg-white text-slate-900;
   }
 
-  /* Override shadcn/ui input text color for VVL styling */
-  input.vvl-input, 
+  input.vvl-input,
   textarea.vvl-input,
   textarea.vvl-textarea,
   select.vvl-input {
-    color: white !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #0f172a !important;
+    background-color: #ffffff !important;
   }
 
-  /* Ensure placeholder text is visible */
   input.vvl-input::placeholder,
   textarea.vvl-input::placeholder,
   textarea.vvl-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(15, 23, 42, 0.45) !important;
   }
 
-  /* Textarea specific styling for consistency */
   .vvl-textarea {
-    @apply bg-white/10 backdrop-blur-sm border border-white/30 text-white placeholder-gray-300 rounded-lg px-4 py-3 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-200 resize-none;
+    @apply bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:border-violet-400 focus:ring-2 focus:ring-violet-300/40 transition-all duration-200 resize-none;
   }
 
-  /* Ensure all textarea elements use VVL styling */
   textarea.vvl-input {
     @apply resize-none;
   }
 
+  /* Typography */
   .vvl-text-primary {
-    @apply text-white;
+    @apply text-slate-900;
   }
 
   .vvl-text-secondary {
-    @apply text-gray-300;
+    @apply text-slate-600;
   }
 
   .vvl-text-accent {
-    @apply bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent;
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(90deg, #f59e0b, #a855f7);
   }
 
+  /* Header */
   .vvl-header-blur {
-    @apply bg-slate-900/80 backdrop-blur-md border-b border-white/10;
+    @apply bg-white/90 backdrop-blur border-b border-slate-200;
   }
 }
 
 /* Custom animation delays for loading indicators */
-.animation-delay-300 {
-  animation-delay: 300ms;
-}
-
-.animation-delay-600 {
-  animation-delay: 600ms;
-}
-
-.animation-delay-900 {
-  animation-delay: 900ms;
-}
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-600 { animation-delay: 600ms; }
+.animation-delay-900 { animation-delay: 900ms; }
 
 /* Enhanced pulse animation for AI processing */
 @keyframes ai-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.1);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.03); }
 }
 
-.animate-ai-pulse {
-  animation: ai-pulse 1.5s ease-in-out infinite;
-}
+.animate-ai-pulse { animation: ai-pulse 1.5s ease-in-out infinite; }
 
-/* Global text visibility improvements */
+/* Global text visibility improvements - on light surfaces, ensure defaults */
 .vvl-gradient-bg input:not(.vvl-input),
 .vvl-gradient-bg textarea:not(.vvl-textarea),
 .vvl-gradient-bg select {
-  color: #1f2937 !important; /* Dark gray text for non-VVL inputs */
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  background-color: #ffffff !important;
 }
 
 .vvl-gradient-bg input:not(.vvl-input)::placeholder,
 .vvl-gradient-bg textarea:not(.vvl-textarea)::placeholder {
-  color: rgba(31, 41, 55, 0.6) !important;
+  color: rgba(15, 23, 42, 0.45) !important;
 }
 
 /* Ensure labels are always visible */
 .vvl-gradient-bg label {
-  color: white !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  color: #0f172a !important;
+  text-shadow: none;
 }
 
 /* Progress bar animation */
 @keyframes progress {
-  0% {
-    width: 0%;
-  }
-  25% {
-    width: 25%;
-  }
-  50% {
-    width: 50%;
-  }
-  75% {
-    width: 75%;
-  }
-  100% {
-    width: 90%;
-  }
+  0% { width: 0%; }
+  25% { width: 25%; }
+  50% { width: 50%; }
+  75% { width: 75%; }
+  100% { width: 90%; }
 }
 
-.animate-progress {
-  animation: progress 8s ease-in-out;
-}
+.animate-progress { animation: progress 8s ease-in-out; }
