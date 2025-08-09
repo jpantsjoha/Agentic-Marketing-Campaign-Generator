@@ -2,7 +2,7 @@
 ### Agentic AI Marketing Campaign Manager
 
 **Author: JP + 2025-06-28**
-**Version: v1.0.1alpha-blog-post**
+**Version: v1.0.2**
 
 > **Transform your business ideas into professional marketing campaigns using Google's ADK Framework and Gemini API**
 
@@ -14,6 +14,11 @@ An open-source, AI-powered marketing campaign generator that demonstrates the po
 [![Google ADK](https://img.shields.io/badge/Google-ADK%201.0+-4285f4.svg)](https://google.github.io/adk-docs/)
 
 ---
+
+## 🆕 What's New in v1.0.2
+
+- Settings page for Gemini API key (frontend)
+- Repo hardening: added CI secret scanning via gitleaks
 
 ## 🆕 What's New in v1.0.1alpha-blog-post
 
